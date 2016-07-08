@@ -1,0 +1,309 @@
+This document is a long(er) and sometimes unclear description of using Dart as one of the languages in Emacs org-mode Babel.
+
+You probably want to read file:./../README.org instead.
+
+* Investigation :  how org-mode :results *output* / *value* works
+
+See http://orgmode.org/manual/results.html
+
+*Summary of behavior* : Is logical if you think of the *value* mode(the default functional mode to return last statement result) as *the programmatic mode*.
+
+The behaviour is as follows:
+
+  - Only *value* result can be converted to *table*. By default (unless *raw* specified), *value* converts to *table*
+    The processor should take the returned *value* (aka result of the last statement) 
+    and convert it to table using this logic:
+    - If the type of the returned *value* is a list/sequence/collection, 
+      each element with be one cell of the table
+    - Otherwise, convert the returned *value* to String, and put it to a single cell.
+    - *raw* always wins - no table formatting.
+
+  - if result is 
+
+*Notes* 
+  - Bash seems to take all echos as "value" not just the last
+
+*Implementation of result in Dart before return*
+
+Step 1 (At first):
+- for output, no formatting
+- for value, convert returned value to string, no further formatting
+
+Step 2:
+
+- for output, no formatting
+  - Dart cannot do anything for results=output. Here, stdout is just list of lines (on newline), potentially with commas inside lines.  org-babel-dart-table-or-string should disassemble these into a table.
+
+- for value
+
+  - Let Dart check if result is a Sequence
+    - if true, call to-string on each element, wrap it to a String, and join result on comma, return the comma separated list - so the result is "\"elm_1\", \"elm_2\", \"elm_n\"". As a benefit, if any elm is newline, it will serve as a new table line.
+    - if false, call to-string on result and return it. This will guarantee that if a String is returned, output and value will lead to the same result. 
+  - The above is then used to pass to elisp code:
+    - org-babel-dart-table-or-string
+    - org-babel-python-table-or-string
+    - org-babel-groovy-table-or-string
+    - See this Code:
+      #+BEGIN_SRC emacs-lisp
+        (defun org-babel-python-table-or-string (results)
+          "Convert RESULTS into an appropriate elisp value.
+        If the results look like a list or tuple, then convert them into an
+        Emacs-lisp table, otherwise return the results as a string."
+          (let ((res (org-babel-script-escape results)))
+            (if (listp res)
+                (mapcar (lambda (el) (if (equal el 'None)
+                                         org-babel-python-None-to el))
+                        res)
+              res)))
+      #+END_SRC
+    - *See org-babel-reassemble-table used in emacs-lisp*
+
+** Bash: output/value
+
+*** Value (by default) formats results into table. This is somewhat logical, "value" is intended as "functional" mode, to take last statement as a result; and by default , it attempts to format as table
+
+
+ #+BEGIN_SRC bash :results value
+ echo a, b, c
+ echo last, statement
+ #+END_SRC
+
+ #+RESULTS:
+ | a    | b         | c |
+ | last | statement |   |
+
+
+*** Output never(?) formats results into table, but, adds column (:) before results 
+
+ #+BEGIN_SRC bash :results output
+ echo a, b, c
+ echo last, statement
+ #+END_SRC
+
+ #+RESULTS:
+ : a, b, c
+ : last, statement
+
+
+*** *Raw always wins - no table formatting, just a raw outpur/result to String Value+raw or Output+raw does not touch result in any way
+
+ #+BEGIN_SRC bash :results output raw
+ echo a, b, c
+ echo last, statement
+ #+END_SRC
+
+ #+RESULTS:
+ a, b, c
+ last, statement
+
+
+ #+BEGIN_SRC bash :results value raw
+ echo a, b, c
+ echo last, statement
+ #+END_SRC
+
+ #+RESULTS:
+ a, b, c
+ last, statement
+
+
+** Python: output/value
+
+*** Value (by default) formats results into table. This is somewhat logical, "value" is intended as "functional" mode, to take last statement as a result; and by default , it attempts to format as table
+
+ Value returns result of last statement and formats it as table
+ #+BEGIN_SRC python :results value table 
+ print ("a", "b", "c")
+ print ("d")
+ return ("last", "statement", "confusion, here? No!")
+ #+END_SRC
+
+ #+RESULTS:
+ | last | statement | confusion, here? No! |
+
+
+*** Output never formats results into table, but, adds column (:) before results 
+
+ #+BEGIN_SRC python :results output table
+ print ("a", "b", "c")
+ print ("d")
+ print "1. 2, 3"
+ # return ("last", "statement")  # return not actually allowed if output is used.
+ #+END_SRC
+
+ #+RESULTS:
+ : ('a', 'b', 'c')
+ : d
+ : 1. 2, 3
+
+
+
+*** Raw always wins - no table formatting, just a raw output/result to String Value+raw or Output+raw does not touch result in any way
+
+ #+BEGIN_SRC python :results output raw
+ print ("a", "b", "c")
+ print ("d")
+ # return ("last", "statement")  # return not actually allowed if output is used.
+ #+END_SRC
+
+ #+RESULTS:
+ ('a', 'b', 'c')
+ d
+
+ #+BEGIN_SRC python :results value raw
+ print ("a", "b", "c")
+ print ("d")
+ return ("last", "statement")  # return not actually allowed if output is used.
+ #+END_SRC
+
+ #+RESULTS:
+ ('last', 'statement')
+ 
+
+
+** Comparing Dart with: Python with classes 
+
+Python can use classes in the snippet, see code below
+
+#+BEGIN_SRC python :results output 
+  # from http://www.tutorialspoint.com/python/python_classes_objects.htm
+  class Employee:
+    empCount = 0
+  
+    def __init__(self, name, salary):
+      self.name = name
+      self.salary = salary
+      Employee.empCount += 1
+  
+    def displayCount(self):
+      print "Total Employee %d" % Employee.empCount
+    
+    def displayEmployee(self):
+      print "Name : ", self.name,  ", Salary: ", self.salary
+
+  "This would create first object of Employee class"
+  emp1 = Employee("Zara", 2000)
+  "This would create second object of Employee class"
+  emp2 = Employee("Manni", 5000)
+  emp1.displayEmployee()
+  emp2.displayEmployee()
+  msg =  "Total Employee %d" % Employee.empCount
+
+  print msg
+  # only for value: return msg
+ 
+#+END_SRC
+
+#+RESULTS:
+: Name :  Zara , Salary:  2000
+: Name :  Manni , Salary:  5000
+: Total Employee 2
+
+
+* Notes on code structure of ob-dart.el:
+
+1. In init.dart, we load ob-dart.el:
+  (load-file "~/.emacs.d/ob-dart.el")
+  (require 'ob-dart)
+2. The variable to run dart, ~org-babel-dart-command~ is set in ob-dart
+  (defvar org-babel-dart-command "dart"
+  "Name of the command to use for executing Dart code.")
+3. dart is currently linked in /home/usr/bin/dart to groovy 
+4. When a source block with BEGIN_SRC dart is executed, defun in ob-dart ~org-babel-execute:dart~ is called by babel.
+5. ~org-babel-dart-wrapper-method~ is, despite it's name, a variable, which is dart code in a string, that is passed the code block body. /The string, when executed, needs to run the code block, and println it's result value/
+6. ~org-babel-execute:dart~ - sequence of calls:
+   - (~org-babel-dart-evaluate~ session full-body result-type result-params) in both *output* nad *value* call
+     - ~org-babel-eval org-babel-dart-command src-file~ - _this calls dart with the src-file created from the code block_
+       - *for both case=value or output*: This calls Dart on ~src-file~ which is a the code body, ~wrapped in org-babel-dart-wrapper-method~. Dart wrapper runs the code block, and println the results (return is converted to print).
+
+
+* TODO Examples That do not Work 
+
+** TODO Process data from :var, scalar or table. 
+
+Let us say we want to find five largest files in the tmp directory and calculate their average size. In org mode, we can select the best tool for each task. We can get the file list into a table using a shell command. As we want to address the result table, we specify the output table name as tblname
+
+#+NAME: large_files
+#+BEGIN_SRC shell
+ls -lS /tmp | grep -v "total " | head -5 | sed 's/\s\+/ /g' | cut -d' ' -f5,9
+#+END_SRC
+
+#+RESULTS: large_files
+|                                             2147484504 | konsole-hp1876.history                                 |
+|                                             1474635432 | konsole-Yh1876.history                                 |
+|                                               29111236 | konsole-tF1876.history                                 |
+|                                               27673128 | konsole-zT1876.history                                 |
+|                                               26149752 | konsole-rF1898.history                                 |
+| [2147484504, 1474635432, 29111236, 27673128, 26149752] | [2147484504, 1474635432, 29111236, 27673128, 26149752] |
+#+TBLFM: @6$2=@1$1..@5$1
+
+#+BEGIN_SRC sh :var files=large_files[0:4,1:1] :results output
+echo $files 
+for file in $files; do
+  echo File=$file
+done
+#+END_SRC
+
+#+RESULTS:
+: konsole-hp1876.history konsole-Yh1876.history konsole-tF1876.history konsole-zT1876.history konsole-rF1898.history
+: File=konsole-hp1876.history
+: File=konsole-Yh1876.history
+: File=konsole-tF1876.history
+: File=konsole-zT1876.history
+: File=konsole-rF1898.history
+
+todo: similar example for Dart. 
+
+
+
+* Next Steps
+
+- [X] Edit ob-dart.el and cleanup comments on top
+- [X] Convert this document into a README-detail.org
+- [X] Remove any mz from this doc
+- [X] Shorten this doc to README.org
+- [ ] Put ob-dart.el, and the 2 readmes on Github + intro
+- [ ] Test by downloading the github version.
+
+
+* Future Improvements
+
+- [ ] Consider adding defcustoms to ob-dart.el
+- [ ] Support for full Dart code soon, so the main method and classes can be used in code
+  - [ ] first version  will use primitive parsing for main,but should work in all normal cases, something like below.
+    - [ ] Hmm, maybe replace fragile steps below with "use emacs Dart parser to find the ~main~ method.". Or use Dart analyser.
+    - [ ] put code into list of lines (separate on newline??)
+    - [ ] sniff out main, separate code to:
+    - [ ] user-code-before = begin to line before main
+      - [ ] find line with main
+      - [ ] must match either "^ *main *([^/{}]*) *{" or  "^ *void +main REST SAME"
+      - [ ] take substring from that line to end and iterate  chars: for { add 1, for } subtract 1. Count new lines. When 0 reached, that is number of lines that main () { ...} has 
+      - [ ] this give line-num of the main line + line number of the end 
+    - [ ] user-code-after =  line after main() {} to end
+    - [ ] user-code-main = stuff in main {}
+    - [ ] insert as string:
+      - [ ] user-code-before
+      - [ ] user-code-after
+      - [ ] Gen class
+        - [ ] put  user-code-main in runSrc() {}
+- [ ] Add support to run any Dart code: Intended to be added soon, so classes can be defined, and any valid Dart code to be pasted in the Org code sections.  Code in #+begin_src .. #end_src can only run code that would normally be placed in the main() method block.  ob-dart wraps main() around it..
+- [ ] Add support for ob-dart code to use packages. How is this done in dartpad?. 
+- [ ] Add support for Org Babel "session mode" which allows to run Dart in interactive mode (as in iPython/Jupiter): May be added later.
+- [ ] Strings outputted by Dart to stdio by methods other than print() (e.g. loggers?) would still show up in the :results value mode. Need to look more into loggers, not sure how to resolve this yet. Maybe this is not so important due to the audience size.  
+
+
+* Notes
+
+      - Restart emacs and customize the babel list of supported languages:
+        - customize-variable org-babel-load-languages, and in the case selector:
+        - click on INS
+        - it will be filled by the first language (likely Awk)
+        - click on it, emacs will take you to the M-x prompt
+        - type the questionmark
+        - a list of options will appear, including Dart
+        - click on Dart
+        - click on "Save" customization for future sessions.
+      - New language support can be also added as follows:
+        (add-to-list 'org-src-lang-modes '("<LANGUAGE>" . "<MAJOR-MODE>"))
+
+

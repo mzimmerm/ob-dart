@@ -1,0 +1,394 @@
+This document is a (relatively) short description of using Dart as one of the languages in Emacs org-mode Babel.
+
+* About this Package: Org Babel Dart (ob-dart).
+
+This emacs package (ob-dart.el) supports running Dart code in Emacs org-mode Babel source blocks.
+
+
+* A Simple Example 
+
+A Extremely simple usage example:
+
+After installation, put cursor anywhere inside the ~#+begin_src ... #+end_src~ block in the text below, and hit C-c C-c (holding down the Ctrl button, hit c twice). This will run the code snipper in Dart, and show result below in the ~#+results~ section.
+
+#+BEGIN_SRC dart :exports both
+return [1,2, 11,10].reduce(max);
+#+END_SRC
+
+#+RESULTS:
+: 11
+
+There are more examples in the Examples section.
+
+
+* Installation
+
+ Before ob-dart is on MELPA, following the steps below will ensure everything needed is installed. 
+
+      - Make sure org-mode is installed in your emacs. Recent versions of emacs do include org mode.
+
+      - Install the Dart language on your operating system.
+
+        - Download Dart implementation from https://www.dartlang.org/downloads/
+
+        - For the rest of this installation, let us assume Dart was extracted to
+          ~$HOME/software/dart-sdk~
+
+        - Add the Dart installation bin directory to your PATH. This is achieved e.g. by adding to your profile (such as .bashrc or .bash_profile if you use bash) :
+
+            #+BEGIN_EXAMPLE
+            export PATH=${PATH}:$HOME/software/dart-sdk/bin
+            #+END_EXAMPLE
+
+      - Download and install ob-dart.el in emacs from this Github repository:
+
+        - Download ob-dart.el from Github (todo- link) and save it. For the rest of this installation, let us assume you have saved ob-dart.el in
+          ~$HOME/.emacs.d/ob-dart.el~
+
+        - Add the following code to your emacs init file (assuming ~$HOME/.emacs.d/init.el~)
+
+          #+BEGIN_SRC emacs-lisp
+
+            ;; Step 1: Add ob-dart to /path/to/ob-dart.el, for example:
+
+            (load-file "~/.emacs.d/ob-dart.el") 
+            (require 'ob-dart)
+
+            ;; Step 2: For Dart to appear as one of the values of 
+            ;;         customize-variable org-babel-load-languages, add this code:
+
+            (org-babel-do-load-languages
+             'org-babel-load-languages
+             '(
+               (dart . t)
+               ;; other languages may be added here
+               ;; (python . t)
+               ;; etc
+               )
+             )
+          #+END_SRC
+
+      - Test a Dart code block in a org file. To do this, you can edit this file README.org in emacs, and follow the description of the Simple Example section above.
+
+
+* About the "Babel" part of Emacs Org Mode
+ 
+Org Mode (org-mode) is a mode for editing files in text, yet "wysiwyggy". 
+
+(org-mode) Babel is used in literal programming, reproducible research, for documentation and more.
+
+You can read about org-mode and org-mode babel on these links:
+
+- http://org-babel.readthedocs.io/en/latest/
+- http://orgmode.org/worg/org-contrib/babel/intro.html
+- http://ehneilsen.net/notebook/orgExamples/org-examples.html
+- http://orgmode.org/
+
+
+* How Org Babel Dart works
+
+Before executing Dart code between the ~#+begin_src and #+end_src~, a temporary file is generated with several standard Dart library imports (core, async, collection etc) on top. Below, the code is wrapped in a main() method. This temporary file is then run as command line dart. Org mode inserts it's output back in the document in the #+RESULTS section, just below the code. 
+
+This is the similar as code  between the ~#+begin_src and #+end_src~ in main(), executed from Dart, with all security implications.
+
+
+* Current Limitations
+
+1. Major: The :var Input to org babel code blocks is not supported in this ob-dart version (from scalar variables or tables).
+
+2. Medium: The section of code between ~#+begin_src and #end_src~ can only run Dart code that would normally be placed /inside a top-level Dart function/ (top-level functions: see https://www.dartlang.org/dart-tips/dart-tips-ep-6.html ).  Ob-dart wraps this code as  ~main() { begin_src to end_src }~. This is to support the main intended use of Babel to write functions in a mix of languages in a simple way. As a result of this implementation, the ability to run "any" Dart code that would normally be placed in a file and run as if we ran ~dart my-app.dart~ is missing. See /Resolving Current Limitations/ for detail discussion.
+
+3. Medium: Ability to pass a flag specifying to run in checked / production mode
+ 
+4. Medium: Need to figure out how to support packages. Should support packages.yaml somehow. How is this done in dartpad?.
+
+5. Medium: Asserts failures cause org mode result formatting error. Likely an org-mode issue
+
+6. Minor(?): Missing support for Org Babel "session mode" which allows to run Dart in and "incremental" mode (as in iPython/Jupiter): This may not be resonably doable at this time, as Dart does not have a REPL yet - although it looks like [[http://news.dartlang.org/2016/05/unboxing-packages-vmserviceclient.html][the vm_service_client]] may allow to write a Dart REPL. So perhaps one day.
+
+7. Minor(?): Strings outputted by Dart to stdio by methods other than print() (e.g. loggers?) would still show up in the :results value mode. Need to look more into loggers, not sure how to resolve this yet. Maybe this is not so important due to the audience size.
+
+
+* Example 1: A Brief Presentation of Dart using this package (Org Babel Dart)
+
+Dart already has excellent tools for learning and quickly running Dart code and code snippets, such as https://dartpad.dartlang.org/. The usefulness of this package (Dart in org mode) is thus to be seen.
+
+Perhaps it can be useful to make use of the easy editing in org mode, and then use the amazing org-mode tools to convert org documents to other formats, ODT, html, PDF and others. So having Dart working in org mode babel can be used for documenting, generating pdf, or html for blogs or pages that need include Dart code and results.  
+
+The following paragraph is a simple example of how Org Babel Dart might be used.
+
+** A Presentation Example - Org Babel Dart in a minute
+
+*** Chapter 1: Fonts and Core Language elements
+
+| Syntax                         | Desc                          |
+|--------------------------------+-------------------------------|
+| ~// This is a comment in Dart~ | Comment                       |
+| ~var length = 10~              | Variable declaration, untyped |
+| ~print("Hello")~               | print to stdout               |
+|                                | etc                           |
+
+
+*** Chapter 2: Dart Sample Code
+
+The following code prints true and false.
+
+#+BEGIN_SRC dart :exports both :results output
+def str = "hello" + " there";
+print (str == "hello there");
+print (str == "not hello there");
+#+END_SRC
+
+#+RESULTS:
+: true
+: false
+
+Entering C-c C-c (Control down, enter the  c key twice) with cursor between ~#+begin_src and #+end_src~ will produce the results section. Chang code and repeat.
+
+
+*** Chapter 3: Conditionals
+
+#+BEGIN_SRC dart :exports both :results output
+var status = 'Ok';
+if (status) {
+  print ('Status was true');
+} else {
+  print('Status was false');
+}
+#+END_SRC
+
+#+RESULTS:
+: Status was false
+
+This shows we run in production mode; not in checked mode.
+
+
+*** Chapter 4: This is Example 1 end, as one minute elapsed :)
+
+
+* Example 2: Show Differences between :results value and :results output and :results output(or value) raw
+
+Examples show the rather boring differences between various collection types (:results output/value with potential format raw). See http://orgmode.org/manual/results.html
+
+#+BEGIN_SRC dart :exports both :results value
+  var listMax = [1,2,3].reduce(max);
+  print  ("In output mode, all printed lines show in result");
+  print  ("List max printed = " + listMax.toString());
+  return  "List max returned = " + listMax.toString(); // Note: bug in Org export (C-c C-e h o) prevents a syntactically correct:   return  "List max returned = ${listMax}"; 
+#+END_SRC
+
+#+RESULTS:
+: List max returned = 3
+
+
+#+BEGIN_SRC dart :exports both :results value table
+  var listMax = [1,2,3].reduce(max);
+  print  ("In output mode, all printed lines show in result");
+  print  ("List max printed = " + listMax.toString());
+  return  "List max returned = " + listMax.toString();
+#+END_SRC
+
+#+RESULTS:
+| List max returned = 3 |
+
+To output an actual table, return a list. Like this:
+
+#+BEGIN_SRC dart :exports both :results value table 
+  return [1,2];
+#+END_SRC
+
+#+RESULTS:
+| 1 | 2 |
+
+Or if you want to return a table with headers, like this:
+
+#+BEGIN_SRC dart :exports both :results value table 
+  return [ 
+    ["col_1", "col_2"], // no spaces in headers; default impl breaks on them
+    [1,       2],
+    [3,       4]
+  ];
+#+END_SRC
+
+#+RESULTS:
+| col_1 | col_2 |
+|     1 |     2 |
+|     3 |     4 |
+
+
+#+BEGIN_SRC dart :exports both :results output
+  var listMax = [1,2,3].reduce(max);
+  print  ("In output mode, all printed lines show in result");
+  print  ("List max printed = " + listMax.toString());
+  return  "List max returned = " + listMax.toString();
+#+END_SRC
+
+#+RESULTS:
+: In output mode, all printed lines show in result
+: List max printed = 3
+
+
+Table is correctly ignored with output, showing quoted results, as shown below:
+
+#+BEGIN_SRC dart :exports both :results output table 
+  var listMax = [1,2,3].reduce(max);
+  print  ("In output mode, all printed lines show in result");
+  print  ("List max printed = " + listMax.toString());
+  return  "List max returned = " + listMax.toString();
+#+END_SRC
+
+#+RESULTS:
+: In output mode, all printed lines show in result
+: List max printed = 3
+
+Raw does not add any formatting to the result in neither "output", nor "value" mode, and results appear as regular text, as shown below. Also note that because org mode joins lines of regular text, multiple printed lines of results are joined.
+
+#+BEGIN_SRC dart :exports both :results value raw
+  var listMax = [1,2,3].reduce(max);
+  print  ("In output mode, all printed lines show in result");
+  print  ("List max printed = " + listMax.toString());
+  return  "List max returned = " + listMax.toString();
+ #+END_SRC
+
+
+
+#+BEGIN_SRC dart :exports both :results output raw
+  var listMax = [1,2,3].reduce(max);
+  print  ("In output mode, all printed lines show in result");
+  print  ("List max printed = " + listMax.toString());
+  return  "List max returned = " + listMax.toString();
+#+END_SRC
+
+
+* Resolving Current Limitations
+
+Below, a discussion for each numbered item in the Limitations section.
+
+1. :var not passed to Dart. Should deal with this first, for Dart code blocks to play nice in org context, and accept, rather than just return, information.
+
+2. Code that will work (and not work) inside the ~#+begin_src and #end_src~.
+
+   - Issues with solving this limitation: I want to add support for "any" Dart code soon, so functions, classes, and methods can be defined, then used in Org Babel Dart. Ideally, any valid Dart code that would run from the Dart command line can be pasted in the Org code sections and support the basic results modes. But this would make it impossible to support the :results value, because the Dart ~main()~ function does not return a value. Currently, ob-dart works around the :results value problem by wrapping the code and a combination pf running Zoned to ignore print(), and relying on return present in the org code, wraping it as print(). But to solve this in a general case,  would require a deeper level of code manipulation either with emacs Semantic or Dart Analyser (https://github.com/dart-lang/sdk/tree/master/pkg/analyzer) (to wrap a return as print or similar).
+
+   - Suggested solutions: I think for now I arrived at supporting the following "Styles" - When Org Babel Dart code uses any of the styles below, it will work without adding further org mode special flags, headers, or markers.
+
+     - *Dart Style Top Level Functional*: This is the currently supported style.The  ~#+begin_src and #end_src~ section can contain any code that can be inside a top-level Dart function without any class context from "above" the top level method. Some basic imports are added before the conde runs. Both ":results value" and ":results output" do work as expected. 
+
+       - Valid examples (this works becaue functions can be nested, so this works wrapped in main):
+
+         #+BEGIN_SRC dart :exports both :results value
+         square(x) {
+           return x * x;
+         }
+         return square(2);
+         #+END_SRC
+
+         #+RESULTS:
+         : 4
+
+         #+BEGIN_SRC dart :exports both :results value
+         var x = 1.5;
+         var y = 2;
+         return max(pow(x, 4), pow(y, 2));
+         #+END_SRC
+
+         #+RESULTS:
+         : 5.0625
+
+       - Invalid Example (does not work because class cannot be nested in a function, and we are wrapping all code in main())
+
+         #+BEGIN_SRC dart :exports both :results value
+           /* nesting class in a top-level function fails
+           class C {
+             square(x) {
+               return x * x;
+             }
+           }
+           var c = new C();
+           return c.square(2);
+           */ 
+         #+END_SRC
+
+         #+RESULTS:
+         : null
+
+     - *Dart Style Aided Functional*: This will be extension of the mode above. It will allow to define classes above code, and use them in code. It will require user to enter a special marker in code; code above the marker will be evaluated on top level, and so classes and functions defined above the marker can be used below it. This will make the example from above valid. Both ":results value" and ":results output" will work as expected. 
+
+       - Valid Example (does work because we split code on the marker, and only wrap the code below the "separator" string)
+
+         #+BEGIN_SRC dart :results value
+           /* todo - uncomment once support added
+           class C {
+             square(x) {
+               return x * x;
+             }
+           }
+           // Org-Dart-Functional
+           var c = new C();
+           return c.square(2);
+           */
+         #+END_SRC
+
+         #+RESULTS:
+         : null
+
+       - todo: provide an invalid example
+
+     - *Dart Style Dart Program*: This will be different from either styles above. Any fully valid Dart program can be entered; it must include the main() method. Only  ":results output" will be a valid option, ":results value" will cause an error..
+
+       - Valid Example:
+
+         #+BEGIN_SRC dart :exports both :results value
+           /* todo - uncomment once support added
+           class C {
+             square(x) {
+               return x * x;
+             }
+           }
+           main() {
+             var c = new C();
+             print( c.square(2) );
+           }
+           */ 
+         #+END_SRC
+
+         #+RESULTS:
+         : null
+
+
+* Security
+
+Do not execute randomly downloaded code in Org Babel. Do not execute code you do not understand. There is no guarantee using insecure code such as "delete all" will not harm your data.. The issues would be similar to running the code as ~dart some-file.dart~.
+
+As a result, use at own risk. There are no guarantees running a random code safely - please read the org-mode babel documentation regarding security. 
+
+
+
+* Todos (apart from resolving the limitations above)
+
+1. Check language of ob-dart.el comments: 
+2. Add a babel directive :import if specified, the wrapper will not add any import packages. Imported packages must be in code (later, we may allow to specify and list in the :import directive)
+
+
+* Bugs
+
+1. :results value table does not allow space in the header name.
+
+  #+name:  bug-space-in-header-for-results-value-table
+  #+BEGIN_SRC dart :exports both :results value table 
+  return [ 
+    ["col 1", "col 2"],
+    [1,       2],
+    [3,       4]
+  ];
+  #+END_SRC
+
+  This works e.g. in python, but in Dart it adds columns on spaces:
+
+  #+RESULTS:  bug-space-in-header-for-results-value-table
+  | col | 1 | col | 2 |
+  |   1 | 2 |     |   |
+  |   3 | 4 |     |   |
+
+
+

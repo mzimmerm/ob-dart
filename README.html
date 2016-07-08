@@ -1,0 +1,851 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2016-05-16 Mon 11:28 -->
+<meta  http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta  name="viewport" content="width=device-width, initial-scale=1" />
+<title></title>
+<meta  name="generator" content="Org-mode" />
+<meta  name="author" content="Milan Zimmermann" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  pre.src-sh:before    { content: 'sh'; }
+  pre.src-bash:before  { content: 'sh'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-R:before     { content: 'R'; }
+  pre.src-perl:before  { content: 'Perl'; }
+  pre.src-java:before  { content: 'Java'; }
+  pre.src-sql:before   { content: 'SQL'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  /*]]>*/-->
+</style>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2013 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="content">
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#orgheadline1">1. About this Package: Org Babel Dart (ob-dart).</a></li>
+<li><a href="#orgheadline2">2. A Simple Example</a></li>
+<li><a href="#orgheadline3">3. Installation</a></li>
+<li><a href="#orgheadline4">4. About the "Babel" part of Emacs Org Mode</a></li>
+<li><a href="#orgheadline5">5. How Org Babel Dart works</a></li>
+<li><a href="#orgheadline6">6. Current Limitations</a></li>
+<li><a href="#orgheadline12">7. Example 1: A Brief Presentation of Dart using this package (Org Babel Dart)</a>
+<ul>
+<li><a href="#orgheadline11">7.1. A Presentation Example - Org Babel Dart in a minute</a>
+<ul>
+<li><a href="#orgheadline7">7.1.1. Chapter 1: Fonts and Core Language elements</a></li>
+<li><a href="#orgheadline8">7.1.2. Chapter 2: Dart Sample Code</a></li>
+<li><a href="#orgheadline9">7.1.3. Chapter 3: Conditionals</a></li>
+<li><a href="#orgheadline10">7.1.4. Chapter 4: This is Example 1 end, as one minute elapsed :)</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li><a href="#orgheadline13">8. Example 2: Show Differences between :results value and :results output and :results output(or value) raw</a></li>
+<li><a href="#orgheadline14">9. Resolving Current Limitations</a></li>
+<li><a href="#orgheadline15">10. Security Warning</a></li>
+<li><a href="#orgheadline16">11. Bugs</a></li>
+<li><a href="#orgheadline17">12. <b>END OF README</b></a></li>
+</ul>
+</div>
+</div>
+<p>
+This document is a (relatively) short description of using Dart as one of the languages in Emacs org-mode Babel.
+</p>
+
+<div id="outline-container-orgheadline1" class="outline-2">
+<h2 id="orgheadline1"><span class="section-number-2">1</span> About this Package: Org Babel Dart (ob-dart).</h2>
+<div class="outline-text-2" id="text-1">
+<p>
+This emacs package (ob-dart.el) supports running Dart code in Emacs org-mode Babel code.
+</p>
+</div>
+</div>
+
+
+<div id="outline-container-orgheadline2" class="outline-2">
+<h2 id="orgheadline2"><span class="section-number-2">2</span> A Simple Example</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+A Extremely simple usage example:
+</p>
+
+<p>
+After installation, put cursor anywhere between <code>#+begin_src and #+end_src</code> in the text below, and hit C-c C-c (holding down the Ctrl button, hit c twice). This will run the code snipper in Dart, and show result below in the <code>#+results</code> section.
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-dart"><span style="color: #a020f0;">return</span> [1,2, 11,10].reduce(max);
+</pre>
+</div>
+
+<pre class="example">
+11
+</pre>
+
+<p>
+There are more examples in the Examples section.
+</p>
+</div>
+</div>
+
+
+<div id="outline-container-orgheadline3" class="outline-2">
+<h2 id="orgheadline3"><span class="section-number-2">3</span> Installation</h2>
+<div class="outline-text-2" id="text-3">
+<p>
+Before ob-dart is on MELPA, following the steps below will ensure everything needed is installed. 
+</p>
+
+<ul class="org-ul">
+<li>Make sure org-mode is installed in your emacs. Recent versions of emacs do include org mode.</li>
+
+<li>Install the Dart language in your OS.
+
+<ul class="org-ul">
+<li>Download Dart implementation from <a href="https://www.dartlang.org/downloads/">https://www.dartlang.org/downloads/</a></li>
+
+<li>For the rest of this installation, let us assume Dart was extracted to
+<code>$HOME/software/dart-sdk</code></li>
+
+<li><p>
+Add the Dart installation bin directory to your PATH. This is achieved e.g. by adding to your profile (such as .bashrc or .bash<sub>profile</sub> if you use bash) :
+</p>
+
+<pre class="example">
+PATH=${PATH}:$HOME/software/dart-sdk/bin
+</pre></li>
+</ul></li>
+
+<li>Download and install ob-dart.el in emacs
+
+<ul class="org-ul">
+<li>Download ob-dart.el from Github (todo- link) and save it. For the rest of this installation, let us assume you have saved ob-dart.el in
+<code>$HOME/.emacs.d/ob-dart.el</code></li>
+
+<li><p>
+Add the following code to your emacs init file (assuming <code>$HOME/.emacs.d/init.el</code>)
+</p>
+<div class="org-src-container">
+
+<pre class="src src-emacs-lisp"><span style="color: #b22222;">;; </span><span style="color: #b22222;">Step 1: Add ob-dart to /path/to/ob-dart.el, for example:</span>
+
+(load-file <span style="color: #8b2252;">"~/.emacs.d/ob-dart.el"</span>) 
+(<span style="color: #a020f0;">require</span> '<span style="color: #008b8b;">ob-dart</span>)
+
+<span style="color: #b22222;">;; </span><span style="color: #b22222;">Step 2: For Dart to appear as one of the values of </span>
+<span style="color: #b22222;">;;         </span><span style="color: #b22222;">customize-variable org-babel-load-languages:</span>
+
+(org-babel-do-load-languages
+ 'org-babel-load-languages
+ '(
+   (dart . t)
+   <span style="color: #b22222;">;; </span><span style="color: #b22222;">other languages may be added here</span>
+   <span style="color: #b22222;">;; </span><span style="color: #b22222;">(python . t)</span>
+   <span style="color: #b22222;">;; </span><span style="color: #b22222;">etc</span>
+   )
+ )
+</pre>
+</div></li>
+</ul></li>
+
+<li>Test a Dart code block in a org file. To do this, you can edit this file README.org in emacs, and follow the description of the Simple Example section.</li>
+</ul>
+</div>
+</div>
+
+
+<div id="outline-container-orgheadline4" class="outline-2">
+<h2 id="orgheadline4"><span class="section-number-2">4</span> About the "Babel" part of Emacs Org Mode</h2>
+<div class="outline-text-2" id="text-4">
+<p>
+Org Mode (org-mode) is a mode for editing files in text, yet "wysiwyggy". 
+</p>
+
+<p>
+(org-mode) Babel is used in literal programming, reproducible research, for documentation and more.
+</p>
+
+<p>
+You can read about org-mode and org-mode babel on these links:
+</p>
+
+<ul class="org-ul">
+<li><a href="http://org-babel.readthedocs.io/en/latest/">http://org-babel.readthedocs.io/en/latest/</a></li>
+<li><a href="http://orgmode.org/worg/org-contrib/babel/intro.html">http://orgmode.org/worg/org-contrib/babel/intro.html</a></li>
+<li><a href="http://ehneilsen.net/notebook/orgExamples/org-examples.html">http://ehneilsen.net/notebook/orgExamples/org-examples.html</a></li>
+<li><a href="http://orgmode.org/">http://orgmode.org/</a></li>
+</ul>
+</div>
+</div>
+
+
+<div id="outline-container-orgheadline5" class="outline-2">
+<h2 id="orgheadline5"><span class="section-number-2">5</span> How Org Babel Dart works</h2>
+<div class="outline-text-2" id="text-5">
+<p>
+Before executing Dart code between the <code>#+begin_src and #+end_src</code>, a temporary file is generated with several standard Dart library imports (core, async, collection etc) on top. Below, the code is wrapped in a main() method. This temporary file is then run as command line dart; it's output is inserted back in the document in the #+RESULTS section, just below the code. 
+</p>
+
+<p>
+This is the same as putting the code  between the <code>#+begin_src and #+end_src</code> in main(), and running from Dart, with all security implications.
+</p>
+</div>
+</div>
+
+
+<div id="outline-container-orgheadline6" class="outline-2">
+<h2 id="orgheadline6"><span class="section-number-2">6</span> Current Limitations</h2>
+<div class="outline-text-2" id="text-6">
+<ol class="org-ol">
+<li>Major: The :var Input to org babel code blocks is not supported in this ob-dart version (from scalar variables or tables).</li>
+
+<li>Medium: The section of code between <code>#+begin_src and #end_src</code> can only run Dart code that would normally be placed <i>inside a top-level Dart function</i> (top-level functions: see <a href="https://www.dartlang.org/dart-tips/dart-tips-ep-6.html">https://www.dartlang.org/dart-tips/dart-tips-ep-6.html</a> ).  Ob-dart wraps this code as  <code>main() { begin_src to end_src }</code>. This is to support the main intended use of Babel to write functions in a mix of languages in a simple way. As a result of this implementation, the ability to run "any" Dart code that would normally be placed in a file and run as if we ran <code>dart my-app.dart</code> is missing. See <i>Resolving Current Limitations</i> for detail discussion.</li>
+
+<li>Medium: Ability to pass a flag specifying to run in checked / production mode</li>
+
+<li>Medium: Need to figure out how to support packages. Should support packages.yaml somehow. How is this done in dartpad?.</li>
+
+<li>Medium: Asserts failures cause org mode result formatting error. Likely an org-mode issue</li>
+
+<li>Minor: Missing support for Org Babel "session mode" which allows to run Dart in and "incremental" mode (as in iPython/Jupiter): This may not be resonably possible, as Dart does not have a REPL.</li>
+
+<li>Minor(?): Strings outputted by Dart to stdio by methods other than print() (e.g. loggers?) would still show up in the :results value mode. Need to look more into loggers, not sure how to resolve this yet. Maybe this is not so important due to the audience size.</li>
+</ol>
+</div>
+</div>
+
+
+<div id="outline-container-orgheadline12" class="outline-2">
+<h2 id="orgheadline12"><span class="section-number-2">7</span> Example 1: A Brief Presentation of Dart using this package (Org Babel Dart)</h2>
+<div class="outline-text-2" id="text-7">
+<p>
+Dart already has excellent tools for learning and quickly running Dart code and code snippets, such as <a href="https://dartpad.dartlang.org/">https://dartpad.dartlang.org/</a>. The usefulness of this package (Dart in org mode) is thus to be seen.
+</p>
+
+<p>
+Perhaps it can be useful to make use of the easy editing in org mode, and then use the amazing org-mode tools to convert org documents to other formats, ODT, html, PDF and others. So having Dart working in org mode babel can be used for documenting, generating pdf, or html for blogs or pages that need include Dart code and results.  
+</p>
+
+<p>
+The following paragraph is a simple example of how Org Babel Dart might be used.
+</p>
+</div>
+
+<div id="outline-container-orgheadline11" class="outline-3">
+<h3 id="orgheadline11"><span class="section-number-3">7.1</span> A Presentation Example - Org Babel Dart in a minute</h3>
+<div class="outline-text-3" id="text-7-1">
+</div><div id="outline-container-orgheadline7" class="outline-4">
+<h4 id="orgheadline7"><span class="section-number-4">7.1.1</span> Chapter 1: Fonts and Core Language elements</h4>
+<div class="outline-text-4" id="text-7-1-1">
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+
+<col  class="org-left" />
+</colgroup>
+<thead>
+<tr>
+<th scope="col" class="org-left">Syntax</th>
+<th scope="col" class="org-left">Desc</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="org-left"><code>// This is a comment in Dart</code></td>
+<td class="org-left">Comment</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>var length = 10</code></td>
+<td class="org-left">Variable declaration, untyped</td>
+</tr>
+
+<tr>
+<td class="org-left"><code>print("Hello")</code></td>
+<td class="org-left">print to stdout</td>
+</tr>
+
+<tr>
+<td class="org-left">&#xa0;</td>
+<td class="org-left">etc</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+
+
+<div id="outline-container-orgheadline8" class="outline-4">
+<h4 id="orgheadline8"><span class="section-number-4">7.1.2</span> Chapter 2: Dart Sample Code</h4>
+<div class="outline-text-4" id="text-7-1-2">
+<p>
+The following code prints true and false.
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-dart"><span style="color: #228b22;">def</span> <span style="color: #a0522d;">str</span> = <span style="color: #8b2252;">"hello"</span> + <span style="color: #8b2252;">" there"</span>;
+print (str == <span style="color: #8b2252;">"hello there"</span>);
+print (str == <span style="color: #8b2252;">"not hello there"</span>);
+</pre>
+</div>
+
+<pre class="example">
+true
+false
+</pre>
+
+<p>
+Entering C-c C-c (Control down, enter the  c key twice) with cursor between <code>#+begin_src and #+end_src</code> will produce the results section. Chang code and repeat.
+</p>
+</div>
+</div>
+
+
+<div id="outline-container-orgheadline9" class="outline-4">
+<h4 id="orgheadline9"><span class="section-number-4">7.1.3</span> Chapter 3: Conditionals</h4>
+<div class="outline-text-4" id="text-7-1-3">
+<div class="org-src-container">
+
+<pre class="src src-dart"><span style="color: #a020f0;">var</span> <span style="color: #a0522d;">status</span> = <span style="color: #8b2252;">'Ok'</span>;
+<span style="color: #a020f0;">if</span> (status) {
+  print (<span style="color: #8b2252;">'Status was true'</span>);
+} <span style="color: #a020f0;">else</span> {
+  print(<span style="color: #8b2252;">'Status was false'</span>);
+}
+</pre>
+</div>
+
+<pre class="example">
+Status was false
+</pre>
+
+<p>
+This shows we run in production mode; not in checked mode.
+</p>
+</div>
+</div>
+
+
+<div id="outline-container-orgheadline10" class="outline-4">
+<h4 id="orgheadline10"><span class="section-number-4">7.1.4</span> Chapter 4: This is Example 1 end, as one minute elapsed :)</h4>
+</div>
+</div>
+</div>
+
+
+<div id="outline-container-orgheadline13" class="outline-2">
+<h2 id="orgheadline13"><span class="section-number-2">8</span> Example 2: Show Differences between :results value and :results output and :results output(or value) raw</h2>
+<div class="outline-text-2" id="text-8">
+<p>
+Examples show the rather boring differences between various collection types (:results output/value with potential format raw). See <a href="http://orgmode.org/manual/results.html">http://orgmode.org/manual/results.html</a>
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-dart"><span style="color: #a020f0;">var</span> <span style="color: #a0522d;">listMax</span> = [1,2,3].reduce(max);
+print  (<span style="color: #8b2252;">"In output mode, all printed lines show in result"</span>);
+print  (<span style="color: #8b2252;">"List max printed = "</span> + listMax.toString());
+<span style="color: #a020f0;">return</span>  <span style="color: #8b2252;">"List max returned = "</span> + listMax.toString(); <span style="color: #b22222;">// </span><span style="color: #b22222;">Note: bug in Org export (C-c C-e h o) prevents a syntactically correct:   return  "List max returned = ${listMax}";</span>
+</pre>
+</div>
+
+<pre class="example">
+List max returned = 3
+</pre>
+
+
+<div class="org-src-container">
+
+<pre class="src src-dart"><span style="color: #a020f0;">var</span> <span style="color: #a0522d;">listMax</span> = [1,2,3].reduce(max);
+print  (<span style="color: #8b2252;">"In output mode, all printed lines show in result"</span>);
+print  (<span style="color: #8b2252;">"List max printed = "</span> + listMax.toString());
+<span style="color: #a020f0;">return</span>  <span style="color: #8b2252;">"List max returned = "</span> + listMax.toString();
+</pre>
+</div>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-left" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-left">List max returned = 3</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+To output an actual table, return a list. Like this:
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-dart"><span style="color: #a020f0;">return</span> [1,2];
+</pre>
+</div>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-right" />
+
+<col  class="org-right" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-right">1</td>
+<td class="org-right">2</td>
+</tr>
+</tbody>
+</table>
+
+<p>
+Or if you want to return a table with headers, like this:
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-dart"><span style="color: #a020f0;">return</span> [ 
+  [<span style="color: #8b2252;">"col_1"</span>, <span style="color: #8b2252;">"col_2"</span>], <span style="color: #b22222;">// </span><span style="color: #b22222;">no spaces in headers; default impl breaks on them</span>
+  [1,       2],
+  [3,       4]
+];
+</pre>
+</div>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-right" />
+
+<col  class="org-right" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-right">col<sub>1</sub></td>
+<td class="org-right">col<sub>2</sub></td>
+</tr>
+
+<tr>
+<td class="org-right">1</td>
+<td class="org-right">2</td>
+</tr>
+
+<tr>
+<td class="org-right">3</td>
+<td class="org-right">4</td>
+</tr>
+</tbody>
+</table>
+
+
+<div class="org-src-container">
+
+<pre class="src src-dart"><span style="color: #a020f0;">var</span> <span style="color: #a0522d;">listMax</span> = [1,2,3].reduce(max);
+print  (<span style="color: #8b2252;">"In output mode, all printed lines show in result"</span>);
+print  (<span style="color: #8b2252;">"List max printed = "</span> + listMax.toString());
+<span style="color: #a020f0;">return</span>  <span style="color: #8b2252;">"List max returned = "</span> + listMax.toString();
+</pre>
+</div>
+
+<pre class="example">
+In output mode, all printed lines show in result
+List max printed = 3
+</pre>
+
+
+<p>
+Table is correctly ignored with output, showing quoted results, as shown below:
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-dart"><span style="color: #a020f0;">var</span> <span style="color: #a0522d;">listMax</span> = [1,2,3].reduce(max);
+print  (<span style="color: #8b2252;">"In output mode, all printed lines show in result"</span>);
+print  (<span style="color: #8b2252;">"List max printed = "</span> + listMax.toString());
+<span style="color: #a020f0;">return</span>  <span style="color: #8b2252;">"List max returned = "</span> + listMax.toString();
+</pre>
+</div>
+
+<pre class="example">
+In output mode, all printed lines show in result
+List max printed = 3
+</pre>
+
+<p>
+Raw does not add any formatting to the result in neither "output", nor "value" mode, and results appear as regular text, as shown below. Also note that because org mode joins lines of regular text, multiple printed lines of results are joined.
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-dart"><span style="color: #a020f0;">var</span> <span style="color: #a0522d;">listMax</span> = [1,2,3].reduce(max);
+print  (<span style="color: #8b2252;">"In output mode, all printed lines show in result"</span>);
+print  (<span style="color: #8b2252;">"List max printed = "</span> + listMax.toString());
+<span style="color: #a020f0;">return</span>  <span style="color: #8b2252;">"List max returned = "</span> + listMax.toString();
+</pre>
+</div>
+
+<p>
+List max returned = 3
+</p>
+
+
+
+<div class="org-src-container">
+
+<pre class="src src-dart"><span style="color: #a020f0;">var</span> <span style="color: #a0522d;">listMax</span> = [1,2,3].reduce(max);
+print  (<span style="color: #8b2252;">"In output mode, all printed lines show in result"</span>);
+print  (<span style="color: #8b2252;">"List max printed = "</span> + listMax.toString());
+<span style="color: #a020f0;">return</span>  <span style="color: #8b2252;">"List max returned = "</span> + listMax.toString();
+</pre>
+</div>
+
+<p>
+In output mode, all printed lines show in result
+List max printed = 3
+</p>
+</div>
+</div>
+
+
+<div id="outline-container-orgheadline14" class="outline-2">
+<h2 id="orgheadline14"><span class="section-number-2">9</span> Resolving Current Limitations</h2>
+<div class="outline-text-2" id="text-9">
+<p>
+Below, a discussion for each numbered item in the Limitations section.
+</p>
+
+<ol class="org-ol">
+<li>:var not passed to Dart. Should deal with this first, for Dart code blocks to play nice in org context, and accept, rather than just return, information.</li>
+
+<li>Code that will work (and not work) inside the <code>#+begin_src and #end_src</code>.
+
+<ul class="org-ul">
+<li>Issues with solving this limitation: I want to add support for "any" Dart code soon, so functions, classes, and methods can be defined, then used in Org Babel Dart. Ideally, any valid Dart code that would run from the Dart command line can be pasted in the Org code sections and support the basic results modes. But this would make it impossible to support the :results value, because the Dart <code>main()</code> function does not return a value. Currently, ob-dart works around the :results value problem by wrapping the code and a combination pf running Zoned to ignore print(), and relying on return present in the org code, wraping it as print(). But to solve this in a general case,  would require a deeper level of code manipulation either with emacs Semantic or Dart Analyser (<a href="https://github.com/dart-lang/sdk/tree/master/pkg/analyzer">https://github.com/dart-lang/sdk/tree/master/pkg/analyzer</a>) (to wrap a return as print or similar).</li>
+
+<li>Suggested solutions: I think for now I arrived at supporting the following "Styles" - When Org Babel Dart code uses any of the styles below, it will work without adding further org mode special flags, headers, or markers.
+
+<ul class="org-ul">
+<li><b>Dart Style Top Level Functional</b>: This is the currently supported style.The  <code>#+begin_src and #end_src</code> section can have any code that can be inside a top-level Dart function without any class context from "above" the top level method. Both ":results value" and ":results output" do work as expected. 
+
+<ul class="org-ul">
+<li><p>
+Valid example (this works becaue functions can be nested, so this works wrapped in main):
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-dart"><span style="color: #0000ff;">square</span>(<span style="color: #228b22;">x</span>) {
+  <span style="color: #a020f0;">return</span> x * x;
+}
+<span style="color: #a020f0;">return</span> square(2);
+</pre>
+</div>
+
+<pre class="example">
+4
+</pre></li>
+
+<li><p>
+Invalid Example (does not work because class cannot be nested in function, and we are wrapping all code in main())
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-dart"><span style="color: #b22222;">/* </span><span style="color: #b22222;">todo - uncomment once support added</span>
+<span style="color: #b22222;">class C {</span>
+<span style="color: #b22222;">  square(x) {</span>
+<span style="color: #b22222;">    return x * x;</span>
+<span style="color: #b22222;">  }</span>
+<span style="color: #b22222;">}</span>
+<span style="color: #b22222;">var c = new C();</span>
+<span style="color: #b22222;">return c.square(2);</span>
+<span style="color: #b22222;">*/</span>
+</pre>
+</div>
+
+<pre class="example">
+null
+</pre></li>
+</ul></li>
+
+<li><b>Dart Style Aided Functional</b>: This will be extension of the mode above. It will allow to define classes above code, and use them in code. It will require user to enter a special marker in code; code above the marker will be evaluated on top level, and so classes and functions defined above the marker can be used below it. This will make the example from above valid. Both ":results value" and ":results output" will work as expected. 
+
+<ul class="org-ul">
+<li><p>
+Valid Example (does work because we split code on the marker, and only wrap the code below the "separator" string)
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-dart"><span style="color: #b22222;">/* </span><span style="color: #b22222;">todo - uncomment once support added</span>
+<span style="color: #b22222;">class C {</span>
+<span style="color: #b22222;">  square(x) {</span>
+<span style="color: #b22222;">    return x * x;</span>
+<span style="color: #b22222;">  }</span>
+<span style="color: #b22222;">}</span>
+<span style="color: #b22222;">// Org-Dart-Functional</span>
+<span style="color: #b22222;">var c = new C();</span>
+<span style="color: #b22222;">return c.square(2);</span>
+<span style="color: #b22222;">*/</span>
+</pre>
+</div></li>
+
+<li>todo: provide an invalid example</li>
+</ul></li>
+
+<li><b>Dart Style Dart Program</b>: This will be different from either styles above. Any fully valid Dart program can be entered; it must include the main() method. Only  ":results output" will be a valid option, ":results value" will cause an error..
+
+<ul class="org-ul">
+<li><p>
+Valid Example:
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-dart"><span style="color: #b22222;">/* </span><span style="color: #b22222;">todo - uncomment once support added</span>
+<span style="color: #b22222;">class C {</span>
+<span style="color: #b22222;">  square(x) {</span>
+<span style="color: #b22222;">    return x * x;</span>
+<span style="color: #b22222;">  }</span>
+<span style="color: #b22222;">}</span>
+<span style="color: #b22222;">main() {</span>
+<span style="color: #b22222;">  var c = new C();</span>
+<span style="color: #b22222;">  print( c.square(2) );</span>
+<span style="color: #b22222;">}</span>
+<span style="color: #b22222;">*/</span>
+</pre>
+</div>
+
+<pre class="example">
+null
+</pre></li>
+</ul></li>
+</ul></li>
+</ul></li>
+</ol>
+</div>
+</div>
+
+
+<div id="outline-container-orgheadline15" class="outline-2">
+<h2 id="orgheadline15"><span class="section-number-2">10</span> Security Warning</h2>
+<div class="outline-text-2" id="text-10">
+<p>
+Use at own risk. I am providing no guarantees this will not cause unexpected data damage. Read the documentation on org-mode babel regarding security. 
+</p>
+
+<p>
+Do not execute randomly downloaded code in Org Babel. Do not execute code you do not understand. There is no guarantee using insecure code such as "delete all" will not harm your data.. The issues would be similar to running the code as <code>dart some-file.dart</code>.
+</p>
+</div>
+</div>
+
+
+
+<div id="outline-container-orgheadline16" class="outline-2">
+<h2 id="orgheadline16"><span class="section-number-2">11</span> Bugs</h2>
+<div class="outline-text-2" id="text-11">
+<ol class="org-ol">
+<li><p>
+:results value table does not allow space in the header name.
+</p>
+
+<div class="org-src-container">
+
+<pre class="src src-dart" id="orgsrcblock1"><span style="color: #a020f0;">return</span> [ 
+  [<span style="color: #8b2252;">"col 1"</span>, <span style="color: #8b2252;">"col 2"</span>],
+  [1,       2],
+  [3,       4]
+];
+</pre>
+</div>
+
+<p>
+This works in python, but in Dart it adds columns on spaces:
+</p>
+
+<table border="2" cellspacing="0" cellpadding="6" rules="groups" frame="hsides">
+
+
+<colgroup>
+<col  class="org-right" />
+
+<col  class="org-right" />
+
+<col  class="org-left" />
+
+<col  class="org-right" />
+</colgroup>
+<tbody>
+<tr>
+<td class="org-right">col</td>
+<td class="org-right">1</td>
+<td class="org-left">col</td>
+<td class="org-right">2</td>
+</tr>
+
+<tr>
+<td class="org-right">1</td>
+<td class="org-right">2</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-right">&#xa0;</td>
+</tr>
+
+<tr>
+<td class="org-right">3</td>
+<td class="org-right">4</td>
+<td class="org-left">&#xa0;</td>
+<td class="org-right">&#xa0;</td>
+</tr>
+</tbody>
+</table></li>
+</ol>
+</div>
+</div>
+
+
+<div id="outline-container-orgheadline17" class="outline-2">
+<h2 id="orgheadline17"><span class="section-number-2">12</span> <b>END OF README</b></h2>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: Milan Zimmermann</p>
+<p class="date">Created: 2016-05-16 Mon 11:28</p>
+<p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
+</div>
+</body>
+</html>
