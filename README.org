@@ -16,11 +16,11 @@ After installation (see the Installation section):
 - Hit C-c C-c (holding down the Ctrl button, hit c twice). Thi will run the code snippet in Dart, and show result below in the ~#+results~ section.
 
 #+BEGIN_SRC dart :exports both
-return [1,2, 11,10].reduce(max);
+return [1,2, 11,12].reduce(max);
 #+END_SRC
 
 #+RESULTS:
-: 11
+: 12
 
 There are more examples in the Examples section.
 
