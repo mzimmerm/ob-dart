@@ -9,7 +9,11 @@ This emacs package (ob-dart.el) supports running Dart code in Emacs org-mode Bab
 
 A Extremely simple usage example:
 
-After installation, put cursor anywhere inside the ~#+begin_src ... #+end_src~ block in the text below, and hit C-c C-c (holding down the Ctrl button, hit c twice). This will run the code snipper in Dart, and show result below in the ~#+results~ section.
+After installation (see the Installation section):
+
+- In this README.org file, viewed in emacs
+- Put cursor anywhere inside the ~#+begin_src ... #+end_src~ block below (this block is hidden if you are reading this on Github)
+- Hit C-c C-c (holding down the Ctrl button, hit c twice). Thi will run the code snippet in Dart, and show result below in the ~#+results~ section.
 
 #+BEGIN_SRC dart :exports both
 return [1,2, 11,10].reduce(max);
