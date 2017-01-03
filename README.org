@@ -1,11 +1,11 @@
 This document is a (relatively) short description of using Dart as one of the languages in Emacs org-mode Babel.
 
-* About this Package: Org Babel Dart (ob-dart).
+* About this Package: Org Babel Dart (ob-dart) - Support for running Dart code from Emacs org-mode source blocks.
 
-This emacs package (ob-dart.el) supports running Dart code in Emacs org-mode Babel source blocks.
+This emacs package (ob-dart.el) supports running Dart code in Emacs org-mode (Babel source blocks).
 
 
-* A Simple Example 
+* A Simple Example of running Dart code in Emacs org-mode (Babel source blocks)
 
 A Extremely simple usage example:
 
@@ -25,59 +25,71 @@ return [1,2, 11,13].reduce(max);
 There are more examples in the Examples section.
 
 
-* Installation
+* Installation of ob-dart
 
- Before ob-dart is on MELPA, following the steps below will ensure everything needed is installed. 
+** Prerequisite - Dart language is installed on your system, in e.g. ~$HOME/software/dart-sdk~
 
-      - Make sure org-mode is installed in your emacs. Recent versions of emacs do include org mode.
+If you do not have Dart installed, follow the steps below to install Dart first
 
-      - Install the Dart language on your operating system.
+- Download Dart implementation from https://www.dartlang.org/downloads/
 
-        - Download Dart implementation from https://www.dartlang.org/downloads/
+- For the rest of this installation, let us assume Dart was extracted to ~$HOME/software/dart-sdk~
 
-        - For the rest of this installation, let us assume Dart was extracted to
-          ~$HOME/software/dart-sdk~
+- Add the Dart installation bin directory to your PATH. Add to your profile (such as .bashrc or .bash_profile if you use bash) :
 
-        - Add the Dart installation bin directory to your PATH. This is achieved e.g. by adding to your profile (such as .bashrc or .bash_profile if you use bash) :
-
-            #+BEGIN_EXAMPLE
-            export PATH=${PATH}:$HOME/software/dart-sdk/bin
-            #+END_EXAMPLE
-
-      - Download and install ob-dart.el in emacs from this Github repository:
-
-        - Download ob-dart.el from Github (todo- link) and save it. For the rest of this installation, let us assume you have saved ob-dart.el in
-          ~$HOME/.emacs.d/ob-dart.el~
-
-        - Add the following code to your emacs init file (assuming ~$HOME/.emacs.d/init.el~)
-
-          #+BEGIN_SRC emacs-lisp
-
-            ;; Step 1: Add ob-dart to /path/to/ob-dart.el, for example:
-
-            (load-file "~/.emacs.d/ob-dart.el") 
-            (require 'ob-dart)
-
-            ;; Step 2: For Dart to appear as one of the values of 
-            ;;         customize-variable org-babel-load-languages, add this code:
-
-            (org-babel-do-load-languages
-             'org-babel-load-languages
-             '(
-               (dart . t)
-               ;; other languages may be added here
-               ;; (python . t)
-               ;; etc
-               )
-             )
-          #+END_SRC
-
-      - Test a Dart code block in a org file. To do this, you can edit this file README.org in emacs, and follow the description of the Simple Example section above.
+  #+BEGIN_EXAMPLE
+  export PATH=${PATH}:$HOME/software/dart-sdk/bin
+  #+END_EXAMPLE
 
 
-* About the "Babel" part of Emacs Org Mode
+** Install ob-dart
+
+*** Installation using MELPA (recommended)
+
+- The ob-dart package is now published on MELPA, so, assuming you have MELPA in the list of your package repositories, you can install ob-dart directly from Emacs using the =package-list-packages= command, selecting ob-dart as "Install (I)" and executing (x).
+
+- Once you have ob-dart installed, test a Dart code block in a org file. To do this, you can edit this file README.org in emacs, and follow the description of the simple example above.
+
+*** Alternative manual installation
+
+It you are not using MELPA, following the steps below will ensure everything needed is installed. 
+
+ - Make sure org-mode is installed in your emacs. Recent versions of emacs do include org mode.
+
+ - Download and install ob-dart.el in emacs from this Github repository:
+
+   - Download ob-dart.el from Github (todo- link) and save it. For the rest of this installation, let us assume you have saved ob-dart.el in
+     ~$HOME/.emacs.d/ob-dart.el~
+
+   - Add the following code to your emacs init file (such as ~$HOME/.emacs.d/init.el~)
+
+     #+BEGIN_SRC emacs-lisp
+
+       ;; Step 1: Add ob-dart to /path/to/ob-dart.el, for example:
+
+       (load-file "~/.emacs.d/ob-dart.el") 
+       (require 'ob-dart)
+
+       ;; Step 2: For Dart to appear as one of the values of 
+       ;;         customize-variable org-babel-load-languages, add this code:
+
+       (org-babel-do-load-languages
+        'org-babel-load-languages
+        '(
+          (dart . t)
+          ;; other languages may be added here
+          ;; (python . t)
+          ;; etc
+          )
+        )
+     #+END_SRC
+
+- Once you have ob-dart installed, test a Dart code block in a org file. To do this, you can edit this file README.org in emacs, and follow the description of the simple example above.
+
+
+* About Emacs Org Mode, and Babel
  
-Org Mode (org-mode) is a mode for editing files in text, yet "wysiwyggy". 
+Org Mode (org-mode) is a mode for editing files in text, in a "wysiwyggy" way. 
 
 (org-mode) Babel is used in literal programming, reproducible research, for documentation and more.
 
@@ -98,7 +110,7 @@ This is the similar as code  between the ~#+begin_src and #+end_src~ in main(), 
 
 * Current Limitations
 
-1. Major: The :var Input to org babel code blocks is not supported in this ob-dart version (from scalar variables or tables).
+1. Major: The :var Input to org babel code blocks is not supported in this ob-dart version (neither scalar variables nor tables).
 
 2. Medium: The section of code between ~#+begin_src and #end_src~ can only run Dart code that would normally be placed /inside a top-level Dart function/ (top-level functions: see https://www.dartlang.org/dart-tips/dart-tips-ep-6.html ).  Ob-dart wraps this code as  ~main() { begin_src to end_src }~. This is to support the main intended use of Babel to write functions in a mix of languages in a simple way. As a result of this implementation, the ability to run "any" Dart code that would normally be placed in a file and run as if we ran ~dart my-app.dart~ is missing. See /Resolving Current Limitations/ for detail discussion.
 
@@ -395,4 +407,22 @@ As a result, use at own risk. There are no guarantees running a random code safe
   |   3 | 4 |     |   |
 
 
+* Notes
+
+1. Code for inclusion of ob-dart on Melpa (*likely of no interest to anyone, just a note to the author*). This recipy was submitted to https://github.com/melpa/melpa/tree/master/recipes/ob-dart using following steps
+
+   - Using the Github Gui, created a recipe for Melpa ob-dart, and added a Github Pull Request for it's inclusion:
+     - Forked https://github.com/melpa from the Github Gui
+     - Added and comitted to the fork a file melpa/recipes/ob-dart with contents here
+       #+BEGIN_SRC lisp
+       (ob-dart
+         :fetcher github
+         :repo "mzimmerm/ob-dart")
+       #+END_SRC
+       - Initiated the pull request (=asking someone to review and merge my new code from my Melpa fork to Melpa master)
+         - Navigated the forked mzimmerm/melpa repository with the changes I want someone else to pull and merge
+         - Pressed the "Pull Requests" button.
+         - Pressed the "Create pull request" button.
+         - There is some dialog, the requires to push another  "Create pull request" button at the bottom.
+     - An owner of Melpa will review the request and merge to Melpa master or follow with comments.
 
