@@ -7,9 +7,7 @@ This emacs package (ob-dart.el) supports running Dart code in Emacs org-mode (Ba
 
 * A Simple Example of running Dart code in Emacs org-mode (Babel source blocks)
 
-A Extremely simple usage example:
-
-After installation (see the Installation section):
+After installation (see the [[Installation]] section), try this:
 
 - In this README.org file, viewed in emacs
 - Put cursor anywhere inside the ~#+begin_src ... #+end_src~ block below (this block is hidden if you are reading this on Github)
@@ -25,13 +23,13 @@ return [1,2, 11,13].reduce(max);
 There are more examples in the Examples section.
 
 
-* Installation of ob-dart
+* Installation
 
 ** Prerequisite - Dart language is installed on your system, in e.g. ~$HOME/software/dart-sdk~
 
-If you do not have Dart installed, follow the steps below to install Dart first
+If you do not have Dart installed, follow steps below to install Dart first
 
-- Download Dart implementation from https://www.dartlang.org/downloads/
+- Download and extract Dart from https://www.dartlang.org/downloads/
 
 - For the rest of this installation, let us assume Dart was extracted to ~$HOME/software/dart-sdk~
 
@@ -44,7 +42,7 @@ If you do not have Dart installed, follow the steps below to install Dart first
 
 ** Install ob-dart
 
-*** Installation using MELPA (recommended)
+*** Installation from MELPA (recommended)
 
 - The ob-dart package is now published on MELPA, so, assuming you have MELPA in the list of your package repositories, you can install ob-dart directly from Emacs using the =package-list-packages= command, selecting ob-dart as "Install (I)" and executing (x).
 
