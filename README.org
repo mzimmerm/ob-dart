@@ -1,31 +1,31 @@
 This document is a (relatively) short description of using Dart as one of the languages in Emacs org-mode Babel.
 
-* About this Package: Org Babel Dart (ob-dart) - Support for running Dart code from Emacs org-mode source blocks.
+* About this Package: Org Babel Dart (ob-dart).
 
 This emacs package (ob-dart.el) supports running Dart code in Emacs org-mode (Babel source blocks).
 
 
 * A Simple Example of running Dart code in Emacs org-mode (Babel source blocks)
 
-After installation (see the [[Installation]] section), try this:
+After installation (see the [[Installation from MELPA]] section), try this:
 
 - In this README.org file, viewed in emacs
 - Put cursor anywhere inside the ~#+begin_src ... #+end_src~ block below (this block is hidden if you are reading this on Github)
 - Hit C-c C-c (holding down the Ctrl button, hit c twice). Thi will run the code snippet in Dart, and show result below in the ~#+results~ section.
 
 #+BEGIN_SRC dart :exports both
-return [1,2, 11,13].reduce(max);
+return [1,2, 11,15].reduce(max);
 #+END_SRC
 
 #+RESULTS:
-: 13
+: 15
 
 There are more examples in the Examples section.
 
 
-* Installation
+* Installation from MELPA
 
-** Prerequisite - Dart language is installed on your system, in e.g. ~$HOME/software/dart-sdk~
+** Prerequisite - Dart language is installed on your system, for example in ~$HOME/software/dart-sdk~
 
 If you do not have Dart installed, follow steps below to install Dart first
 
@@ -40,15 +40,51 @@ If you do not have Dart installed, follow steps below to install Dart first
   #+END_EXAMPLE
 
 
-** Install ob-dart
+** Installing ob-dart and adding Dart to list of Org Babel supported languages 
 
-*** Installation from MELPA (recommended)
+*** Installation from MELPA
 
-- The ob-dart package is now published on MELPA, so, assuming you have MELPA in the list of your package repositories, you can install ob-dart directly from Emacs using the =package-list-packages= command, selecting ob-dart as "Install (I)" and executing (x).
+The ob-dart package is now published on MELPA, so, assuming you have MELPA in the list of your package repositories, you can install ob-dart directly from Emacs. Follow the steps below:
 
-- Once you have ob-dart installed, test a Dart code block in a org file. To do this, you can edit this file README.org in emacs, and follow the description of the simple example above.
+- In emacs, use the =M-x package-list-packages= command.
 
-*** Alternative manual installation
+  - Search for the string ~ob-dart~, and put your cursor on the ~ob-dart~ line.
+
+  - Press the ~i~ key (select line for Install).
+
+  - Press the ~x~ key (Execute installs).
+
+*** Post installation: Adding Dart to list of Org Babel supported languages 
+
+**** Current post-installation
+
+Currently, even though you now have ob-dart installed, you need to add Dart to the list of Org Babel supported languages.
+
+- Add the following code to your emacs init file (such as ~$HOME/.emacs.d/init.el~)
+
+  #+BEGIN_SRC emacs-lisp
+
+    ;; For Dart to appear as one of the values of 
+    ;;         customize-variable org-babel-load-languages, add this code:
+
+    (require 'ob-dart)
+    (add-to-list 'org-babel-load-languages  '(dart . t))
+
+  #+END_SRC
+
+**** Future post-installation
+
+After we add Dart to Babel list of supported languages, we will be able to just add Dart support using customize (as opposed to org-babel-do-load-languages)
+
+ - In emacs, use the =M-x customize-variables= command
+ - On the prompt, respond =org-babel-load-languages=
+ - In the Org Babel Load Languages section, INS (insert) a new item, named Dart, and click State->Save for future session
+
+
+ Last step: Test a Dart code block in a org file. To do this, you can edit this file README.org in emacs, and follow the description of the simple example above.
+
+
+* Alternative to installation from MELPA (probably no reason to use) 
 
 It you are not using MELPA, following the steps below will ensure everything needed is installed. 
 
@@ -56,7 +92,8 @@ It you are not using MELPA, following the steps below will ensure everything nee
 
  - Download and install ob-dart.el in emacs from this Github repository:
 
-   - Download ob-dart.el from Github (todo- link) and save it. For the rest of this installation, let us assume you have saved ob-dart.el in
+   - Download ob-dart.el from Github https://github.com/mzimmerm/ob-dart and save it to a directory. 
+     For the rest of this installation, let us assume you have saved ob-dart.el in
      ~$HOME/.emacs.d/ob-dart.el~
 
    - Add the following code to your emacs init file (such as ~$HOME/.emacs.d/init.el~)
@@ -123,7 +160,7 @@ This is the similar as code  between the ~#+begin_src and #+end_src~ in main(), 
 7. Minor(?): Strings outputted by Dart to stdio by methods other than print() (e.g. loggers?) would still show up in the :results value mode. Need to look more into loggers, not sure how to resolve this yet. Maybe this is not so important due to the audience size.
 
 
-* Example 1: A Brief Presentation of Dart using this package (Org Babel Dart)
+* Example 1: A Brief Presentation of Dart using this package (ob-dart)
 
 Dart already has excellent tools for learning and quickly running Dart code and code snippets, such as https://dartpad.dartlang.org/. The usefulness of this package (Dart in org mode) is thus to be seen.
 
