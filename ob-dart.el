@@ -44,7 +44,7 @@
 (defvar org-babel-tangle-lang-exts)
 (add-to-list 'org-babel-tangle-lang-exts '("dart" . "dart"))
 (defvar org-babel-default-header-args:dart '())
-(defvar org-babel-dart-command "dart"
+(defvar ob-dart-command "dart"
   "Name of the command to use for executing Dart code.
 Windows support is pending.")
 
@@ -57,13 +57,13 @@ Args:
   PARAMS - List   - Org Babel parameters after #+begin_src"
   (message "executing Dart source code block")
   (let* ((processed-params (org-babel-process-params params))
-         (session (org-babel-dart-initiate-session (nth 0 processed-params)))
-         (vars (nth 1 processed-params))
+         (session (ob-dart-initiate-session (nth 0 processed-params)))
+         ;; (vars (nth 1 processed-params))  UNUSED?
          (result-params (nth 2 processed-params))
          (result-type (cdr (assoc :result-type params)))
          (full-body (org-babel-expand-body:generic
                      body params))
-         (result (org-babel-dart-evaluate
+         (result (ob-dart-evaluate
                   session full-body result-type result-params)))
 
     (org-babel-reassemble-table
@@ -74,7 +74,7 @@ Args:
       (cdr (assoc :rowname-names params)) (cdr (assoc :rownames params))))))
 
 
-(defun org-babel-dart-table-or-string (results)
+(defun ob-dart-table-or-string (results)
   "Convert RESULTS into an appropriate elisp value.
 
 The default core implementation `org-babel-script-escape' behaves as follows:
@@ -108,7 +108,7 @@ Args:
 ;;     - Value of the last statement converted to String  is send to the standart output,
 ;;       and becomes the result.
 
-(defvar org-babel-dart-wrapper-method
+(defvar ob-dart-wrapper-method
   "
 //import 'dart:analysis_server';
 //import 'dart:analyzer';
@@ -191,10 +191,9 @@ void main(List args) {
   }
 
 }
-"
-  )
+")
 
-(defun org-babel-dart-evaluate (session body &optional result-type result-params)
+(defun ob-dart-evaluate (session body &optional result-type result-params)
   "Evaluate BODY in external Dart process.
 If RESULT-TYPE equals 'output then return standard output as a string.
 If RESULT-TYPE equals 'value then return the value of the last statement
@@ -211,21 +210,21 @@ Args:
   (when session (error "Session is not (yet) supported for Dart"))
 
   (let* ((src-file (org-babel-temp-file "dart-"))
-         (wrapper (format org-babel-dart-wrapper-method body)))
+         (wrapper (format ob-dart-wrapper-method body)))
 
     (with-temp-file src-file (insert wrapper))
     (let ((raw (org-babel-eval
-                (concat org-babel-dart-command " " src-file " " (symbol-name result-type)) "")))
+                (concat ob-dart-command " " src-file " " (symbol-name result-type)) "")))
       ;; result-type: both 'value and 'output formats results as table, unless raw is specified
       (org-babel-result-cond result-params
         raw
-        (org-babel-dart-table-or-string raw)))))
+        (ob-dart-table-or-string raw)))))
 
-(defun org-babel-prep-session:dart (session params)
+(defun org-babel-prep-session:dart (_session _params)
   "Prepare SESSION according to the header arguments specified in PARAMS."
   (error "Session is not (yet) supported for Dart"))
 
-(defun org-babel-dart-initiate-session (&optional session)
+(defun ob-dart-initiate-session (&optional _session)
   "If there is not a current inferior-process-buffer in SESSION then create.
 Return the initialized session.  Sessions are not supported in Dart."
   nil)
