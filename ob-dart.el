@@ -29,8 +29,8 @@
 ;;; Requirements:
 ;; - Dart language installed - An implementation can be downloaded from
 ;;                             https://www.dartlang.org/downloads/
-;; - The dart executable is on the PATH 
-;; - (Optional) Dart major mode -  Can be installed from MELPA
+;; - The dart executable is on the PATH
+;; - (Optional) Dart major mode from MELPA
 
 ;; Notes:
 ;;   - Code follows / inspired by these previously supported org-languages,
@@ -50,19 +50,16 @@
 (add-to-list 'org-babel-tangle-lang-exts '("dart" . "dart"))
 (defvar org-babel-default-header-args:dart '())
 (defvar org-babel-dart-command "dart"
-  "Name of the command to use for executing Dart code. todo - Windows")
+  "Name of the command to use for executing Dart code.
+Windows support is pending.")
 
 (defun org-babel-execute:dart (body params)
-  "
-Execute a block of Dart code with org-babel.  This function is
-called by `org-babel-execute-src-block'
+  "Execute a block of Dart code with org-babel.
+This function is called by `org-babel-execute-src-block'.
 
 Args:
   BODY   - String - Dart code from org file, between #+begin_src and #+end_src
-                  - should be named: dart-src
-  PARAMS - List   - Org parameters after #+begin_src and #+end_src
-                  - todo - document better, is this correct?
-"
+  PARAMS - List   - Org Babel parameters after #+begin_src"
   (message "executing Dart source code block")
   (let* ((processed-params (org-babel-process-params params))
          (session (org-babel-dart-initiate-session (nth 0 processed-params)))
@@ -83,18 +80,19 @@ Args:
 
 
 (defun org-babel-dart-table-or-string (results)
-  "
-Convert RESULTS into an appropriate elisp value.
+  "Convert RESULTS into an appropriate elisp value.
 
-The default core implementation org-babel-script-escape behaves as follows:
-  - If RESULTS look like a table (grouped using () or {} or [] and delimited by comme), 
-     then convert them into an Emacs-lisp table (list of lists), 
-  - otherwise return the results unchanged as a string.
+The default core implementation `org-babel-script-escape' behaves as follows:
+
+If RESULTS look like a table (grouped using () or {} or [] and
+delimited by commas), then convert them into an Emacs-lisp
+table (list of lists),
+
+Otherwise, return the results unchanged as a string.
 
 Args:
   RESULTS - String - String resulting from Dart invocation, and printed to stdio
-                     by stdout.write() or print()
-"
+                     by stdout.write() or print()"
   (org-babel-script-escape results))
 
 ;; Variable which returns Dart code in String.
@@ -103,20 +101,19 @@ Args:
 ;;   in a Dart main() method. There are some added runZoned() tricks to either use
 ;;   the printed strings or returned value as results of the #+begin_src and #+end_src
 ;;   code.
-;; 
+;;
 ;; The above behaviour is controlled by an argument passed from elisp
 ;;   to the during 'org-babel-eval dart-code argument'.
 ;;
 ;; In particular, if the passed argument (named results_collection_type in code) is:
 ;;   - "output":
 ;;     - Strings from Dart print() is send to the standart output,
-;;       and becomes the result 
+;;       and becomes the result
 ;;   - "value":
 ;;     - Value of the last statement converted to String  is send to the standart output,
 ;;       and becomes the result.
 
 (defvar org-babel-dart-wrapper-method
-
   "
 //import 'dart:analysis_server';
 //import 'dart:analyzer';
@@ -146,7 +143,7 @@ import 'dart:mirrors';
 ////   https://gist.github.com/0e1dd60ca06369f7990d0ecfda8ed6a7
 ////   https://dartpad.dartlang.org/0e1dd60ca06369f7990d0ecfda8ed6a7
 class Gen {
-   
+
   // Wrapped code from the org file, between #+begin_src and #+end_src
 
   runSrc() {
@@ -156,12 +153,12 @@ class Gen {
     //   See (format org-babel-dart-wrapper-method body)
     %s
   }
-  
+
   // run, allow print to stdout, and  ignore return value
   runSrcResultsOutput() {
     runSrc();
   }
-  
+
   // run, ignore print to stdout, and use return value  (which will be printed to stdout)
   runSrcResultsValue() {
     // ignore prints to stdout
@@ -172,41 +169,38 @@ class Gen {
     	print: (self, parent, zone, message) {
       	// Ignore argument message passed to print.
     	}));
-    
+
     return retval;
   }
 }
 
 void main(List args) {
-  
-  // new Gen().runSrcResultsOutput();     
+
+  // new Gen().runSrcResultsOutput();
   // print(\"${new Gen().runSrcResultsValue()}\");
 
   var results_collection_type = null;
   if (args != null && args.length > 0) {
     results_collection_type = args.elementAt(0);
   }
-  
+
   if (results_collection_type == \"output\") {
   	// generate this for :results output
   	new Gen().runSrcResultsOutput();
-  } else if (results_collection_type == \"value\") {   
-  	// generate this for :results value  (use return value and print it) 
+  } else if (results_collection_type == \"value\") {
+  	// generate this for :results value  (use return value and print it)
   	// this works because in Dart print inside print still goes to stdout
-  	stdout.write(\"${new Gen().runSrcResultsValue()}\"); // print with no newline. Needed for 
+  	stdout.write(\"${new Gen().runSrcResultsValue()}\"); // print with no newline. Needed for
   } else {
     throw new Exception(\"Invalid collection type in results: ${results_collection_type}. Only one of [output/value] allowed.\");
   }
-  
+
 }
 "
   )
 
-
-(defun org-babel-dart-evaluate
-    (session body &optional result-type result-params)
-  "
-Evaluate BODY in external Dart process.
+(defun org-babel-dart-evaluate (session body &optional result-type result-params)
+  "Evaluate BODY in external Dart process.
 If RESULT-TYPE equals 'output then return standard output as a string.
 If RESULT-TYPE equals 'value then return the value of the last statement
 in BODY as elisp.
@@ -214,17 +208,16 @@ in BODY as elisp.
 Args:
   SESSION       - TODO DOCUMENT
   BODY          - String from org file, between #+begin_src and #+end_src
-                  - should be named: dart-src
-  RESULT-TYPE   - Symbol with value (output|value) that follows #+begin_src :results TODO DOCUMENT 
-                  - should be named: results-collection - Symbol - (output|value) -
+                - should be named: dart-src
+  RESULT-TYPE   - Babel :results param of (output|value)
+                - should be named: results-collection - Symbol - (output|value)
   RESULT-PARAMS - Symbol TODO DOCUMENT likely the 'format' type from docs
-                  - should be named: results-format
-"
-  (when session (error "Session is not (yet) supported for Dart."))
-  
+                - should be named: results-format"
+  (when session (error "Session is not (yet) supported for Dart"))
+
   (let* ((src-file (org-babel-temp-file "dart-"))
          (wrapper (format org-babel-dart-wrapper-method body)))
-    
+
     (with-temp-file src-file (insert wrapper))
     (let ((raw (org-babel-eval
                 (concat org-babel-dart-command " " src-file " " (symbol-name result-type)) "")))
@@ -235,14 +228,11 @@ Args:
 
 (defun org-babel-prep-session:dart (session params)
   "Prepare SESSION according to the header arguments specified in PARAMS."
-  (error "Session is not (yet) supported for Dart."))
+  (error "Session is not (yet) supported for Dart"))
 
 (defun org-babel-dart-initiate-session (&optional session)
-  "
-If there is not a current inferior-process-buffer in SESSION
-then create.  Return the initialized session.  Sessions are not
-supported in Dart.
-"
+  "If there is not a current inferior-process-buffer in SESSION then create.
+Return the initialized session.  Sessions are not supported in Dart."
   nil)
 
 (provide 'ob-dart)
