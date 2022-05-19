@@ -1,23 +1,19 @@
-;;; ob-dart.el --- org-babel functions for Dart evaluation
+;;; ob-dart.el --- Evaluate Dart source blocks in org-mode -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2016 Free Software Foundation, Inc.
 
 ;; Author: Milan Zimmermann
-;; Keywords: literate programming, reproducible research, emacs, org, babel, dart
+;; Maintainer: Milan Zimmermann
+;; Created: July 7, 2016
+;; Modified: May 19, 2022
+;; Version: 1.0.1
+;; Keywords: languages
 ;; Homepage: http://github.org/mzimmerm/ob-dart
-
-;; This is free software: you can redistribute it and/or modify
-;; it under the terms of the GNU General Public License as published by
-;; the Free Software Foundation, either version 3 of the License, or
-;; (at your option) any later version.
-
-;; This is distributed in the hope that it will be useful,
-;; but WITHOUT ANY WARRANTY; without even the implied warranty of
-;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-;; GNU General Public License for more details.
-
-;; For the GNU General Public License, see <http://www.gnu.org/licenses/>.
-
+;; Package-Requires: ((emacs "24.4"))
+;; SPDX-License-Identifier: GPL-3.0-or-later
+;;
+;; This file is not part of GNU Emacs.
+;;
 ;;; Commentary:
 ;;    - Currently only supports execution of Dart code that can be wrapped
 ;;      in Dart main() method body.
@@ -25,13 +21,13 @@
 ;;    - Support any valid Dart code, including class definitions and
 ;;      the main() method
 ;;    - Session support
-
+;;
 ;;; Requirements:
 ;; - Dart language installed - An implementation can be downloaded from
 ;;                             https://www.dartlang.org/downloads/
 ;; - The dart executable is on the PATH
 ;; - (Optional) Dart major mode from MELPA
-
+;;
 ;; Notes:
 ;;   - Code follows / inspired by these previously supported org-languages,
 ;;     roughly in this order:
@@ -40,7 +36,7 @@
 ;;     - ob-groovy.el
 ;;     - ob-R.el
 ;;     - ob-python.el
-
+;;
 ;;; Code:
 
 (require 'ob)
