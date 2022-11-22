@@ -58,12 +58,20 @@ Execute a block of Dart code with org-babel.  This function is
 called by `org-babel-execute-src-block'
 
 Args:
-  BODY   - String - Dart code from org file, between #+begin_src and #+end_src
-                  - should be named: dart-src
-  PARAMS - List   - Org parameters after #+begin_src and #+end_src
-                  - todo - document better, is this correct?
+  BODY   - String - Dart code from org file, between #+begin_src and #+end_src,
+                         as a string.  Should be named: dart-src.
+  PARAMS - PList  - Property list of header :args after #+begin_src, which may
+                    contain multiple entries for the key `:var',
+                    and other multi-valued items such as `:results output raw'.
+                    Plist ex: (pine cones numbers (1 2 3) color 'blue')
 "
   (message "executing Dart source code block")
+  ;; (processed-params = org-babel-process-params RETURNS assoc list with slightly
+  ;;     reformatted list of :param values from all elements after #+begin_src
+  ;;   For example, from ':results output raw', the function creates two assoc elements,
+  ;;     one is (:result-type . output), second is (:result-params . raw)
+  ;;   Variables are converted to PROPERTY LIST in the result.
+  ;;   Other less frequent parameters like  (:colname-names . (list names)) are cons cells.
   (let* ((processed-params (org-babel-process-params params))
          (session (org-babel-dart-initiate-session (nth 0 processed-params)))
          (vars (nth 1 processed-params))

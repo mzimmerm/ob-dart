@@ -22,20 +22,15 @@ import 'dart:mirrors';
 
 //// Helper class allows to run Dart code wrapped in emacs org mode.
 ////  This is a test version which is eventually embedded in elisp ob-dart.el
-////
-//// Older versions of this document are gists at github and dartpad links
-////  https://gist.github.com/0e1dd60ca06369f7990d0ecfda8ed6a7
-////  https://dartpad.dartlang.org/0e1dd60ca06369f7990d0ecfda8ed6a7
-
 class Gen {
    
   // Wrapped code from the org file, between #+begin_src and #+end_src
 
   runSrc() {
 
-    // Testing from command line or Dartpad:
-    // print(\"from print - for :results output\");
-    // return \"returning - for :result value\";
+    // Testing from command line:
+    print('from print - for :results output');
+    return 'returning - for :result value';
 
     // Live from elisp:
     //   - Code from begin_src .. end_src inserted here by elisp format.
@@ -67,22 +62,22 @@ void main(List args) {
   
   // todo 2
   new Gen().runSrcResultsOutput();     
-  print("${new Gen().runSrcResultsValue()}");
+  print('${new Gen().runSrcResultsValue()}');
 
   var results_collection_type = null;
   if (args != null && args.length > 0) {
     results_collection_type = args.elementAt(0);
   }
   
-  if (results_collection_type == "output") {
+  if (results_collection_type == 'output') {
   	// generate this for :results output
   	new Gen().runSrcResultsOutput();
-  } else if (results_collection_type == "value") {   
+  } else if (results_collection_type == 'value') {
   	// generate this for :results value  (use return value and print it) 
   	// this works because in Dart print inside print still goes to stdout
-  	print("${new Gen().runSrcResultsValue()}");
+  	print('${new Gen().runSrcResultsValue()}');
   } else {
-    throw new Exception("Invalid collection type in results: ${results_collection_type}. Only one of [output/value] allowed.");
+    throw new Exception('Invalid collection type in results: ${results_collection_type}. Only one of [output/value] allowed.');
   }
   
 }
