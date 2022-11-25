@@ -23,9 +23,9 @@ return [1,2, 11,15].reduce(max);
 There are more examples in the Examples section.
 
 
-* Installation from MELPA
+* Installation of ob-dart from MELPA
 
-** Prerequisite - Dart language is installed on your system, for example in ~$HOME/software/dart-sdk~
+** ob-dart prerequisite - Dart language is installed on your system, for example in ~$HOME/software/dart-sdk~
 
 If you do not have Dart installed, follow steps below to install Dart first
 
@@ -160,7 +160,7 @@ This is the similar as code  between the ~#+begin_src and #+end_src~ in main(), 
 7. Minor(?): Strings outputted by Dart to stdio by methods other than print() (e.g. loggers?) would still show up in the :results value mode. Need to look more into loggers, not sure how to resolve this yet. Maybe this is not so important due to the audience size.
 
 
-* Example 1: A Brief Presentation of Dart using this package (ob-dart)
+* A Brief Presentation of Dart using this package (ob-dart)
 
 Dart already has excellent tools for learning and quickly running Dart code and code snippets, such as https://dartpad.dartlang.org/. The usefulness of this package (Dart in org mode) is thus to be seen.
 
@@ -168,21 +168,23 @@ Perhaps it can be useful to make use of the easy editing in org mode, and then u
 
 The following paragraph is a simple example of how Org Babel Dart might be used.
 
-** A Presentation Example - Org Babel Dart in a minute
+** Using Org Babel Dart - quick summary.
 
-*** Chapter 1: Fonts and Core Language elements
+*** Dart Language basics
+
+This table shows Dart basics.
 
 | Syntax                         | Desc                          |
 |--------------------------------+-------------------------------|
 | ~// This is a comment in Dart~ | Comment                       |
-| ~var length = 10~              | Variable declaration, untyped |
-| ~print("Hello")~               | print to stdout               |
+| ~var length = 10;~             | Variable declaration, untyped |
+| ~print("Hello");~              | print to stdout               |
 |                                | etc                           |
 
 
-*** Chapter 2: Dart Sample Code
+*** Dart sample code in org babel.
 
-The following code prints true and false.
+If we want to include a piece of Dart code in a Org document, we could use a block similar to this.
 
 #+BEGIN_SRC dart :exports both :results output
 def str = "hello" + " there";
@@ -194,10 +196,20 @@ print (str == "not hello there");
 : true
 : false
 
-Entering C-c C-c (Control down, enter the  c key twice) with cursor between ~#+begin_src and #+end_src~ will produce the results section. Chang code and repeat.
+Entering C-c C-c (Control down, enter the  c key twice) with cursor between ~#+begin_src and #+end_src~ will produce the results section - printing true and false. This is because the code block arguments specify the following:
+
+~:results output~
+
+If we were to export the Org documents, say to PDF, both source code and the results would appear in the PDF. This is because we specify:
+
+~:exports both~
 
 
-*** Chapter 3: Conditionals
+*** Conditionals (flow control)
+
+We can use any valid Dart code, including functions, except class definitions.
+
+Here we use ~if..else~ for flow control.
 
 #+BEGIN_SRC dart :exports both :results output
 var status = 'Ok';
@@ -211,13 +223,8 @@ if (status) {
 #+RESULTS:
 : Status was false
 
-This shows we run in production mode; not in checked mode.
 
-
-*** Chapter 4: This is Example 1 end, as one minute elapsed :)
-
-
-* Example 2: Show Differences between :results value and :results output and :results output(or value) raw
+* Presenting :results value and :results output and :results output(or value) raw
 
 Examples show the rather boring differences between various collection types (:results output/value with potential format raw). See http://orgmode.org/manual/results.html
 
