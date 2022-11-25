@@ -42,8 +42,35 @@ class Gen {
   runSrcResultsOutput() {
     runSrc();
   }
-  
-  // run, ignore print to stdout, and use return value  (which will be printed to stdout)
+
+  // Run the BEGIN_SRC .. END_SRC source block, ignoring print to stdout,
+  // and return the value of the last expression of the source block,
+  // which must be an explicit 'return' such as:
+  //   'return lastExpression;'
+  //
+  // Should be invoked in the branch of
+  //   'results_collection_type == 'value'',
+  // where a toString() is called on the returned 'lastExpression'
+  //  (the toString() is named 'raw' further in this comment).
+  //
+  // The toString() result pops up in elisp code in the 'ob-dart.el' function
+  //   'org-babel-dart-evaluate'.
+  // This function parses and manipulates the 'raw' string returned from here.
+  //
+  // The elisp parsing and manipulation of the 'raw' string
+  // in 'org-babel-dart-evaluate' may be different
+  // from the  'results_collection_type == 'output'' branch.
+  // The elisp parsing and manipulation of the 'raw' in
+  // the 'org-babel-dart-evaluate' depends on the parameters passed in
+  //    :results [output|value] [raw]
+  // for example,
+  //   - [value raw] does no parsing or manipulation.
+  //   - [value]     converts the 'raw' string to table if 'raw' look like a table
+  //                 (grouped using () or {} or [] and delimited by comme),
+  //                 otherwise behaves as [value raw]
+  //   - [output raw] and [output] just return the 'raw'
+  // So, most situations, the [retval.toString()] shows up in
+  // the org RESULTS block.
   runSrcResultsValue() {
     // ignore prints to stdout
     var retval;
@@ -52,8 +79,14 @@ class Gen {
   	}, zoneSpecification: new ZoneSpecification(
     	print: (self, parent, zone, message) {
       	// Ignore argument message passed to print.
+        // This causes any print invocations inside runZoned
+        // to do nothing.  That achieves the goes of 'result: value'
+        // not printing anything to stdout,
+        //
     	}));
-    
+
+    // Return whatever was returned from 'runSrc()' .
+    // In the context of
     return retval;
   }
 }
@@ -61,7 +94,9 @@ class Gen {
 void main(List args) {
   
   // todo 2
-  new Gen().runSrcResultsOutput();     
+  new Gen().runSrcResultsOutput();
+  // todo
+  // print the result of the code which was running in the no-print zone.
   print('${new Gen().runSrcResultsValue()}');
 
   var results_collection_type = null;
@@ -70,7 +105,7 @@ void main(List args) {
   }
   
   if (results_collection_type == 'output') {
-  	// generate this for :results output
+  	// For [:results output whatever] todo
   	new Gen().runSrcResultsOutput();
   } else if (results_collection_type == 'value') {
   	// generate this for :results value  (use return value and print it) 
