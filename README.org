@@ -20,6 +20,7 @@ return [1,2, 11,15].reduce(max);
 #+RESULTS:
 : 15
 
+
 There are more examples in the Examples section.
 
 
@@ -187,7 +188,7 @@ This table shows Dart basics.
 If we want to include a piece of Dart code in a Org document, we could use a block similar to this.
 
 #+BEGIN_SRC dart :exports both :results output
-def str = "hello" + " there";
+var str = "hello" + " there";
 print (str == "hello there");
 print (str == "not hello there");
 #+END_SRC
@@ -212,7 +213,7 @@ We can use any valid Dart code, including functions, except class definitions.
 Here we use ~if..else~ for flow control.
 
 #+BEGIN_SRC dart :exports both :results output
-var status = 'Ok';
+var status = true;
 if (status) {
   print ('Status was true');
 } else {
@@ -221,12 +222,14 @@ if (status) {
 #+END_SRC
 
 #+RESULTS:
-: Status was false
+: Status was true
 
 
 * Presenting :results value and :results output and :results output(or value) raw
 
 Examples show the rather boring differences between various collection types (:results output/value with potential format raw). See http://orgmode.org/manual/results.html
+
+First, source block which asks for ~:results value~ should result in the string representation of the last statement in the source block which *must be marked with the ~return~ keyword*.
 
 #+BEGIN_SRC dart :exports both :results value
   var listMax = [1,2,3].reduce(max);
@@ -238,6 +241,7 @@ Examples show the rather boring differences between various collection types (:r
 #+RESULTS:
 : List max returned = 3
 
+The same source block which asks for ~:results value table~ should result in the string representation of the last statement, converted to a Org-table on pipe characters if the resulting object is a collection. As the result is not a collection, the whole string representation is surrounded with pipe characters as one table cell.
 
 #+BEGIN_SRC dart :exports both :results value table
   var listMax = [1,2,3].reduce(max);
@@ -273,6 +277,7 @@ Or if you want to return a table with headers, like this:
 |     1 |     2 |
 |     3 |     4 |
 
+Next, evaluation of a source block which asks for ~:results output~ results in showing every string in the code which was directed to stdout (all print statements are directed).
 
 #+BEGIN_SRC dart :exports both :results output
   var listMax = [1,2,3].reduce(max);
@@ -285,8 +290,7 @@ Or if you want to return a table with headers, like this:
 : In output mode, all printed lines show in result
 : List max printed = 3
 
-
-Table is correctly ignored with output, showing quoted results, as shown below:
+In this example, a table is correctly ignored with  ~:results output~, showing quoted results, as shown below:
 
 #+BEGIN_SRC dart :exports both :results output table 
   var listMax = [1,2,3].reduce(max);
@@ -299,7 +303,9 @@ Table is correctly ignored with output, showing quoted results, as shown below:
 : In output mode, all printed lines show in result
 : List max printed = 3
 
-Raw does not add any formatting to the result in neither "output", nor "value" mode, and results appear as regular text, as shown below. Also note that because org mode joins lines of regular text, multiple printed lines of results are joined.
+ ~:results value raw~ and  ~:results output raw~ do not add any formatting to the result, and results appear as regular text, as shown below. Also note that because org mode joins lines of regular text, multiple printed lines of results are joined.
+
+Result of ~:results value raw~:
 
 #+BEGIN_SRC dart :exports both :results value raw
   var listMax = [1,2,3].reduce(max);
@@ -308,14 +314,21 @@ Raw does not add any formatting to the result in neither "output", nor "value" m
   return  "List max returned = " + listMax.toString();
  #+END_SRC
 
+ #+RESULTS:
+ List max returned = 3
 
-
+ Result of ~:results output raw~
+ 
 #+BEGIN_SRC dart :exports both :results output raw
   var listMax = [1,2,3].reduce(max);
   print  ("In output mode, all printed lines show in result");
   print  ("List max printed = " + listMax.toString());
   return  "List max returned = " + listMax.toString();
 #+END_SRC
+
+#+RESULTS:
+In output mode, all printed lines show in result
+List max printed = 3
 
 
 * Resolving Current Limitations
