@@ -1,0 +1,6 @@
+var status = true;
+if (status) {
+print ('Status was true');
+} else {
+print('Status was false');
+}

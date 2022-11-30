@@ -1,0 +1,15 @@
+# Source this file to generate Dart code that ob-dart would
+# generate from Org babel source code bodys wrapped in
+# the appropriate wrapper.
+
+ for body in ../test/bodys/* {
+   # Base filename of body
+   export body-base=${echo $body(:s/.*\///)}
+   # Run the code generator for body
+   # todo - check
+   # if body contains main
+   #   if body contains
+   echo "BEFORE source ./wrap-body.esh"
+   source ./wrap-body.esh ../test/tmp-generated-dart/gen-$'body-base'.dart   $body  ./wrappers/wrapper.dart  ./wrappers/wrapper-imports.dart
+   echo "AFTER source ./wrap-body.esh"
+   }

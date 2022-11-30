@@ -1,0 +1,19 @@
+# This script generates a file with name given in the [first argument]
+# that wraps the contents of the file with name given in the [second argument].
+# The file in the second argument should contain Dart code,
+# as if placed between begin_src..end_src in the ob-dart Dart Gen class.
+
+
+# echo "Args length=${length $*}"
+
+if ${ not { = {length $*} 2 } } {
+   echo "1111111111"
+   echo "Invalid arguments: $*"
+   echo "Usage: $0  file-to-generate.dart  snippet.dart  template.dart"
+} {
+   echo "222222222222"
+   if ${ not { file-exists-p $2 } } {
+      echo "File $2 does not exist."
+   }
+}
+(eval 1)

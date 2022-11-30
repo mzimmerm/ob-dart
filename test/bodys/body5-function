@@ -1,0 +1,4 @@
+   square(x) {
+           return x * x;
+    }
+    return square(2);

@@ -1,0 +1,8 @@
+* About this directory test
+
+The directory ~ob-dart/test/ob-dart-snippets/~ contains Dart snippet samples,
+which are transformed using the wrapper files in ~ob-dart/tool/ob-dart-no-main-snippet-wrappers~.
+
+The wrapper files wrap the snippets into runnable manually-testable generated
+Dart files and place the generated Dart files into ~/test/tmp-generated-dart~.
+

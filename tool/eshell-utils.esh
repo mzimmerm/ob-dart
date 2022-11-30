@@ -1,0 +1,25 @@
+# Eshell utilities.
+(defun
+
+export ERR=0
+
+if ${ not { = {length $*} 1 } } {
+   echo "File not provided!"
+   echo "Usage: $0  filename-to-check-for-existence"
+   # Any command that does not exist will fail and cause <> 0 to return. But will ask for alias.
+   # Put any build-in here that creates and error. It will not ask to add alias, but cause return <> 0
+   export ERR=1
+}
+
+if ${ not { file-exists-p $1 } } {
+   echo "File $1 does not exist!"
+   export ERR=1
+}
+
+# In conditionals: ${CONDITION} checks IF result NOT nil (true) or NIL (false)
+# If called as 'source ./check-file-exists.esh', code here causes the following in caller:
+#   On the success-path (reaches end without going through any of the if bodies):
+#      - Result nil:     if ${source ./check-file-exist.esh aaa} { echo "YEEEES" } { echo "NOOOO" } => NOOOO
+#      - Exit status 0:  if {source ./check-file-exist.esh aaa} { echo "YEEEES" } { echo "NOOOO" } => YEEEES
+#   On the error-path (going through any of the if bodies):
+#      if {source ./check-file-exist.esh bbb} { echo "YEEEES" } { echo "NOOOO" }

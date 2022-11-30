@@ -185,19 +185,20 @@ This table shows Dart basics.
 
 *** Dart sample code in org babel.
 
-If we want to include a piece of Dart code in a Org document, we could use a block similar to this.
+As an example of a piece of Dart code in an Org document is below. If we place the cursor in the source code block between ~#+begin_src and #+end_src~ and enter C-c C-c (Control down, enter the c key twice), the Dart code will be eveluated. The evaluation result will be inserted after the code block in a new block with header ~#+RESULTS:~
 
+#+name: body1-prints
 #+BEGIN_SRC dart :exports both :results output
 var str = "hello" + " there";
 print (str == "hello there");
 print (str == "not hello there");
 #+END_SRC
 
-#+RESULTS:
+#+RESULTS: body1-prints
 : true
 : false
 
-Entering C-c C-c (Control down, enter the  c key twice) with cursor between ~#+begin_src and #+end_src~ will produce the results section - printing true and false. This is because the code block arguments specify the following:
+The text placed in ~#+RESULTS:~ block is determined by the arguments of the source code block. In the example above, we wanted to show the standard output in the ~#+RESULTS:~ block, so we used:
 
 ~:results output~
 
@@ -212,8 +213,9 @@ We can use any valid Dart code, including functions, except class definitions.
 
 Here we use ~if..else~ for flow control.
 
+#+name: body2-conditional
 #+BEGIN_SRC dart :exports both :results output
-var status = true;
+var status = false;
 if (status) {
   print ('Status was true');
 } else {
@@ -221,8 +223,9 @@ if (status) {
 }
 #+END_SRC
 
-#+RESULTS:
-: Status was true
+#+RESULTS: body2-conditional
+: Status was false
+
 
 
 * Presenting :results value and :results output and :results output(or value) raw
@@ -231,6 +234,7 @@ Examples show the rather boring differences between various collection types (:r
 
 First, source block which asks for ~:results value~ should result in the string representation of the last statement in the source block which *must be marked with the ~return~ keyword*.
 
+#+name: body3-prints
 #+BEGIN_SRC dart :exports both :results value
   var listMax = [1,2,3].reduce(max);
   print  ("In output mode, all printed lines show in result");
@@ -238,7 +242,7 @@ First, source block which asks for ~:results value~ should result in the string 
   return  "List max returned = " + listMax.toString(); // Note: bug in Org export (C-c C-e h o) prevents a syntactically correct:   return  "List max returned = ${listMax}"; 
 #+END_SRC
 
-#+RESULTS:
+#+RESULTS: body3-prints
 : List max returned = 3
 
 The same source block which asks for ~:results value table~ should result in the string representation of the last statement, converted to a Org-table on pipe characters if the resulting object is a collection. As the result is not a collection, the whole string representation is surrounded with pipe characters as one table cell.
@@ -264,6 +268,7 @@ To output an actual table, return a list. Like this:
 
 Or if you want to return a table with headers, like this:
 
+#+name: body4-collection
 #+BEGIN_SRC dart :exports both :results value table 
   return [ 
     ["col_1", "col_2"], // no spaces in headers; default impl breaks on them
@@ -272,7 +277,7 @@ Or if you want to return a table with headers, like this:
   ];
 #+END_SRC
 
-#+RESULTS:
+#+RESULTS: body4-collection
 | col_1 | col_2 |
 |     1 |     2 |
 |     3 |     4 |
@@ -347,6 +352,7 @@ Below, a discussion for each numbered item in the Limitations section.
 
        - Valid examples (this works becaue functions can be nested, so this works wrapped in main):
 
+         #+name: body5-function
          #+BEGIN_SRC dart :exports both :results value
          square(x) {
            return x * x;
@@ -354,7 +360,7 @@ Below, a discussion for each numbered item in the Limitations section.
          return square(2);
          #+END_SRC
 
-         #+RESULTS:
+         #+RESULTS: body5-function
          : 4
 
          #+BEGIN_SRC dart :exports both :results value
