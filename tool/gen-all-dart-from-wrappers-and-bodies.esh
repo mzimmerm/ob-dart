@@ -2,7 +2,7 @@
 # generate from Org babel source code bodys wrapped in
 # the appropriate wrapper.
 
- for body in ../test/bodys/* {
+ for body in ../test/bodys/body1-prints* {
    # Base filename of body
    export body-base=${echo $body(:s/.*\///)}
    # Run the code generator for body

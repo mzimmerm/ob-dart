@@ -31,7 +31,7 @@ class Gen {
   ///   if org file has MAIN,    code is copied from main.
   /// Either way, async is added if the code block contains await.
   /// That is theory: for files with MAIN, we add async here if the main is async. 
-  runBlock() async  {
+  runBlock(List args) async  {
     //   - Org code block from begin_src .. end_src inserted here by elisp format.
     //   - See `ob-dart-wrapper` and `format-spec` in wrap-body.esh and ob-dart.el
     var str = "hello" + " there";
@@ -45,8 +45,8 @@ print (str == "not hello there");
   ///
   /// See the [runBlockResultsValue] for description how the async propagation
   /// and await-ing result just before print.
-  runBlockResultsOutput() async  {
-    runBlock();
+  runBlockResultsOutput(List args) async  {
+    runBlock(args);
   }
 
   /// Runs the BEGIN_SRC .. END_SRC source block.
@@ -92,7 +92,7 @@ print (str == "not hello there");
   ///            `methodCaller async {...}`
   ///        if we use await on method call:
   ///             `await method();`
-///
+  ///
   ///        - If caller calls `await method()`, flow waits at this point.
   ///        - Otherwise, caller calls `method():`
   ///             the flow continues TO CALLERS, WHO NEVER AGAIN
@@ -109,7 +109,7 @@ print (str == "not hello there");
   //   The [runBlock] runs async,
   ///  but BEFORE WE PRINT IN CALLER, this thread WAITs, making async to resolve
   ///  the future [runBlock] returnedValue BACK INTO this FLOW (THREAD) before print.
- runBlockResultsValue() async  {
+ runBlockResultsValue(List args) async  {
     var returnedValue;
     /// Runs it's [body], the function in the first argument,
     /// in a new [Zone], based on [ZoneSpecification].
@@ -126,7 +126,7 @@ print (str == "not hello there");
       // the [returnedValue] is not copied from it's Future,
       // by the time of print, so the print would output [null]
       // rather then the [returnedValue].
-      returnedValue = runBlock();
+      returnedValue = runBlock(args);
     }, zoneSpecification:
         ZoneSpecification(print: (self, parent, zone, message) {
       // Ignore argument message passed to print.
@@ -149,13 +149,13 @@ print (str == "not hello there");
   if (results_collection_type == 'output') {
     // For [:results output rest], [runBlock] runs non-zoned,
     // all [print] methods execute.
-    await  Gen().runBlockResultsOutput();
+    await  Gen().runBlockResultsOutput(args);
   } else if (results_collection_type == 'value') {
     // For [:results value rest] [runBlock] runs in the print-avoid zone.
     // This ignores all [print] in [runBlock].
     // The result is passed to [print] below, which is already out of
     // the zone, and prints [runBlockResultsValue] converted [toString].
-    print('${ await  Gen().runBlockResultsValue()}');
+    print('${ await  Gen().runBlockResultsValue(args)}');
   } else {
     throw Exception(
         'Invalid collection type in results: ${results_collection_type}. Only one of [output/value] allowed.');

@@ -1,5 +1,45 @@
 This document is a (relatively) short description of using Dart as one of the languages in Emacs org-mode Babel.
 
+* TODOS todos
+
+Currently:
+
+ - If body has main
+   - ob-dart uses block unchanged, with imports and everything.
+   - Only :results output supported
+ - Else
+   - the full contents of block is wrapped in the Gen code wrapper in ob-dart-wrapper
+
+ - If body has main
+   - todo-v3 : Allow blocks with "main" also be wrapped in Zone so "results: value" is supported
+   - e.g. "Future<type> main(List args) async  \{"
+   - e.g. "type main(List args) async  \{"
+   - parse out args name and put to args-name
+   - parse out async and put to async-str
+   - if eq async-str async, set await-str await
+   - Future<type> there
+      - put to return-type
+   - else if type there
+      - put to return-type
+   - else return-type=void
+   - replace the body main line with line $return-type originalMain(List $args-name) $async-str
+   - setq call-original-main "return originalMain($args-name);"
+   - appending and formatting full-body:
+     - concat
+        - "import 'dart:async';"
+        - body
+        - format-spec ob-dart-wrapper `((?a . async-str) (?w . await-str) (?s . ,call-original-main))
+ - Else body does not match main
+   - todo-v2 allow imports, classes, top level functions from top in that order, delimited by
+     // ob-dart-block-imports-end, // ob-dart-block-classes-end, // ob-dart-block-functions-end
+     - pull sections out of body, create 'body-top-extracted' from 'ob-dart-wrapper-imports',
+       and sections above in that order. These will not be formatted, and placed
+       where 'ob-dart-wrapper-imports' are now
+     - create 'body-main-extracted' formatted and wrapped as current body
+     - so the full-body will be created as
+                 body-top-extracted
+                 wrapped body-main-extracted))
+
 * About this Package: Org Babel Dart (ob-dart).
 
 This emacs package (ob-dart.el) supports running Dart code in Emacs org-mode (Babel source blocks).
