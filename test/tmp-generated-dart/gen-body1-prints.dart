@@ -34,9 +34,9 @@ class Gen {
   runBlock(List args) async  {
     //   - Org code block from begin_src .. end_src inserted here by elisp format.
     //   - See `ob-dart-wrapper` and `format-spec` in wrap-body.esh and ob-dart.el
-    var str = "hello" + " there";
-print (str == "hello there");
-print (str == "not hello there");
+    var str = 'hello' + ' there';
+print (str == 'hello there');
+print (str == 'not hello there');
   }
 
   /// Run the potentially async block asynchronously, and mark this method async,

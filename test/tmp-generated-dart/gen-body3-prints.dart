@@ -35,11 +35,11 @@ class Gen {
     //   - Org code block from begin_src .. end_src inserted here by elisp format.
     //   - See `ob-dart-wrapper` and `format-spec` in wrap-body.esh and ob-dart.el
       var listMax = [1,2,3].reduce(max);
-  print  ("In output mode, all printed lines show in result");
-  print  ("List max printed = " + listMax.toString());
+  print  ('In output mode, all printed lines show in result');
+  print  ('List max printed = ' + listMax.toString());
   // Note: bug in Org export (C-c C-e h o) prevents a syntactically correct:
-  //       return  "List max returned = ${listMax}";
-  return  "List max returned = " + listMax.toString();
+  //       return  'List max returned = ${listMax}';
+  return  'List max returned = ' + listMax.toString();
   }
 
   /// Run the potentially async block asynchronously, and mark this method async,

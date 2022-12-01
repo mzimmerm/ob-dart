@@ -6,3 +6,7 @@ which are transformed using the wrapper files in ~ob-dart/tool/ob-dart-no-main-s
 The wrapper files wrap the snippets into runnable manually-testable generated
 Dart files and place the generated Dart files into ~/test/tmp-generated-dart~.
 
+From all dart-like snippets in bodys, generate wrapped Dart files to tmp-generated-dart by running
+
+   ~source ./gen-all-dart-from-wrappers-and-bodies.esh~
+

@@ -35,7 +35,7 @@ class Gen {
     //   - Org code block from begin_src .. end_src inserted here by elisp format.
     //   - See `ob-dart-wrapper` and `format-spec` in wrap-body.esh and ob-dart.el
       return [
-    ["col_1", "col_2"], // no spaces in headers; default impl breaks on them
+    ['col_1', 'col_2'], // no spaces in headers; default impl breaks on them
     [1,       2],
     [3,       4]
   ];

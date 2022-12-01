@@ -1,5 +1,5 @@
   return [
-    ["col_1", "col_2"], // no spaces in headers; default impl breaks on them
+    ['col_1', 'col_2'], // no spaces in headers; default impl breaks on them
     [1,       2],
     [3,       4]
   ];

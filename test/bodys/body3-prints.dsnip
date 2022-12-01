@@ -1,6 +1,6 @@
   var listMax = [1,2,3].reduce(max);
-  print  ("In output mode, all printed lines show in result");
-  print  ("List max printed = " + listMax.toString());
+  print  ('In output mode, all printed lines show in result');
+  print  ('List max printed = ' + listMax.toString());
   // Note: bug in Org export (C-c C-e h o) prevents a syntactically correct:
-  //       return  "List max returned = ${listMax}";
-  return  "List max returned = " + listMax.toString();
+  //       return  'List max returned = ${listMax}';
+  return  'List max returned = ' + listMax.toString();
