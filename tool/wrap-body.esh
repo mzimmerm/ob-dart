@@ -13,7 +13,7 @@
 
 if ${ not { = {length $*} 4 } } {
     echo "Invalid arguments: $*"
-    echo "Usage: $0  generated-file.dart  body.dart  wrapper.dart wrapper-imports.dart"
+    echo "Usage: $0  generated-file.dart  body.dart  wrapper.dwrap wrapper-imports.dwrap"
 } {
     if ${ not { file-exists-p $2 || file-exists-p $3 } } {
         echo "File $2 or $3 does not exist."
@@ -45,57 +45,6 @@ if ${ not { = {length $*} 4 } } {
         #   - Only :results output supported
         # Else
         #   - the full contents of block is wrapped in the Gen code wrapper in ob-dart-wrapper
-
-(defun write-dart-file-from (body generated-file)
-(let*
-    ;; Split body into parts, and form the `generated-dart-str'
-    ((parts (split-body-depending-on-structure body))
-     (wrapper (parts nth 0))        ;; ob-dart-wrapper or "%s"
-     (body-part-top (parts nth 1))  ;; ob-dart-wrapper-imports or "import dart:async"
-     (body-part-main (parts nth 2)) ;; part of body with main code or full body
-     (generated-dart-str (generate-dart-full-code-from
-                 body-part-top
-                 wrapper
-                 body-part-main)))
-  (f-write-text
-   generated-dart-str
-   'utf-8
-   generated-file)
-  )
-)
-
-(defun generate-dart-full-code-from (body-part-top wrapper body-part-main)
-  "Create and return full Dart code as string from Org Babel source block parts.
-
-The created string starts with unchanged string BODY-PART-TOP,
-appended with WRAPPER string which contains format symbols as %s, %w, %a.
-The WRAPPER is inserted with contents of format-specs at appropriate symbols,
-and BODY-PART-MAIN at WRAPPER's symbol %s.
-
-The wrapper can be just `%s' then the BODY-PART-MAIN
-becomes the WRAPPER, and is appended after BODY-PART-TOP.
-
-Comments:
-
-This method functions the same irrespective whether the
-full source block body contained the Dart `main()' method or not.
-
-Assumes the passed BODY-PART-TOP and BODY-PART-MAIN were extracted
-from the Org Babel Dart full source block,
-
-The logic of splitting the  source block body into
-BODY-PART-TOP and BODY-PART-MAIN depends on whether the
-source block body contained the Dart `main()' method or not
-is not part of this method."
-  (concat
-   body-part-top
-   (format-spec
-    wrapper
-    `((?a . "async ") (?w . "await ") (?s . ,body-part-main))
-                                        ; ignore missing symbols %a in wrapper
-    nil
-                                        ; split to list
-    nil)))
 
 (defun split-body-depending-on-structure (body)
   "Split the passed BODY into BODY-PART-TOP and BODY-PART-MAIN.
@@ -134,18 +83,68 @@ Currently only BODY-PART-MAIN is inserted.
     - `:results output' and `:results value' are supported"
 
   (let* (
-    (main-function-line-index (string-match "^ *([A-z0-9_<>]+) *main *(.*" body))))
+         (main-function-line-index (string-match "^ *\\([A-z0-9_<>]*\\) *main *(.*" body)))
 
     (if main-function-line-index
-        (;; main function exists in body
-         ;; ob-dart uses this Org Babel souce block unchanged, with imports and everything.
-         ;; Only :results output supported
-         ;; Dart code is  "import 'dart:async';", appended with body
-         ;; The wrapper becomes "%s", effectively becomes the body
+        ;; main function exists in body
+        ;; ob-dart uses this Org Babel souce block unchanged, with imports and everything.
+        ;; Only :results output supported
+        ;; Dart code is  "import 'dart:async';\n", appended with body
+        ;; The wrapper becomes "%s", effectively becomes the body
 
-         (list "%s" "import 'dart:async';" body))
+        (list "%s" "import 'dart:async';\n" body)
       ;; main function NOT in body, passed wrapper MUST be ob-dart-wrapper
       (list ob-dart-wrapper ob-dart-wrapper-imports body))))
+
+(defun generate-dart-full-code-from (body-part-top wrapper body-part-main)
+  "Create and return full Dart code as string from Org Babel source block parts.
+
+The created string starts with unchanged string BODY-PART-TOP,
+appended with WRAPPER string which contains format symbols as %s, %w, %a.
+The WRAPPER is inserted with contents of format-specs at appropriate symbols,
+and BODY-PART-MAIN at WRAPPER's symbol %s.
+
+The wrapper can be just `%s' then the BODY-PART-MAIN
+becomes the WRAPPER, and is appended after BODY-PART-TOP.
+
+Comments:
+
+This method functions the same irrespective whether the
+full source block body contained the Dart `main()' method or not.
+
+Assumes the passed BODY-PART-TOP and BODY-PART-MAIN were extracted
+from the Org Babel Dart full source block,
+
+The logic of splitting the  source block body into
+BODY-PART-TOP and BODY-PART-MAIN depends on whether the
+source block body contained the Dart `main()' method or not
+is not part of this method."
+  (concat
+   body-part-top
+   (format-spec
+    wrapper
+    `((?a . "async ") (?w . "await ") (?s . ,body-part-main))
+                                        ; ignore missing symbols %a in wrapper
+    nil
+                                        ; split to list
+    nil)))
+
+(defun write-dart-file-from (body generated-file)
+  "From BODY, create the Dart code to run, and save it in GENERATED-FILE."
+  (let*
+      ;; Split body into parts, and form the `generated-dart-str'
+      ((parts (split-body-depending-on-structure body))
+       (wrapper (nth 0 parts))        ;; ob-dart-wrapper or "%s"
+       (body-part-top (nth 1 parts))  ;; ob-dart-wrapper-imports or "import dart:async"
+       (body-part-main (nth 2 parts)) ;; part of body with main code or full body
+       (generated-dart-str (generate-dart-full-code-from
+                            body-part-top
+                            wrapper
+                            body-part-main)))
+    (f-write-text
+     generated-dart-str
+     'utf-8
+     generated-file)))
 
 (write-dart-file-from body generated-file)
 

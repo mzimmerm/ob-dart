@@ -2,14 +2,17 @@
 # generate from Org babel source code bodys wrapped in
 # the appropriate wrapper.
 
- for body in ../test/bodys/body1-prints* {
+ # for body in ../test/bodys/*(:i/dsnip\|dart/) {echo $body; export body-core=${basename $body}(:s/.dsnip\|.dart//); echo $body-core}
+ for body in ../test/bodys/*(:i/dsnip\|dart/) {
    # Base filename of body
-   export body-base=${echo $body(:s/.*\///)}
+   echo "snippet name=$body"
+   export body-core=${basename $body}(:s/.dsnip\|.dart//)
+   echo "snippet core=$body-core"
    # Run the code generator for body
    # todo - check
    # if body contains main
    #   if body contains
    echo "BEFORE source ./wrap-body.esh"
-   source ./wrap-body.esh ../test/tmp-generated-dart/gen-$'body-base'.dart   $body  ./wrappers/wrapper.dart  ./wrappers/wrapper-imports.dart
+   source ./wrap-body.esh ../test/tmp-generated-dart/gen-$'body-core'.dart   $body  ./wrappers/wrapper.dwrap  ./wrappers/wrapper-imports.dwrap
    echo "AFTER source ./wrap-body.esh"
    }

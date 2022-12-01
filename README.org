@@ -227,7 +227,7 @@ This table shows Dart basics.
 
 As an example of a piece of Dart code in an Org document is below. If we place the cursor in the source code block between ~#+begin_src and #+end_src~ and enter C-c C-c (Control down, enter the c key twice), the Dart code will be eveluated. The evaluation result will be inserted after the code block in a new block with header ~#+RESULTS:~
 
-#+name: body1-prints
+#+name: body1-prints.dsnip
 #+BEGIN_SRC dart :exports both :results output
 var str = "hello" + " there";
 print (str == "hello there");
@@ -392,7 +392,7 @@ Below, a discussion for each numbered item in the Limitations section.
 
        - Valid examples (this works becaue functions can be nested, so this works wrapped in main):
 
-         #+name: body5-function
+         #+name: body5-function.dsnip
          #+BEGIN_SRC dart :exports both :results value
          square(x) {
            return x * x;
@@ -400,7 +400,7 @@ Below, a discussion for each numbered item in the Limitations section.
          return square(2);
          #+END_SRC
 
-         #+RESULTS: body5-function
+         #+RESULTS: body5-function.dsnip
          : 4
 
          #+BEGIN_SRC dart :exports both :results value
