@@ -1,30 +1,15 @@
-//import 'dart:analysis_server';
-//import 'dart:analyzer';
 import 'dart:async';
 import 'dart:collection';
 import 'dart:convert';
 import 'dart:core';
 
-//import 'dart:developer';
-//import 'dart:html';
-//import 'dart:indexed_db';
-//import 'dart:internal';
 import 'dart:io';
 import 'dart:isolate';
 
-//import 'dart:js';
 import 'dart:math';
-import 'dart:mirrors';
-
-//import 'dart:profiler';
-//import 'dart:svg';
-//import 'dart:typed_data';
-//import 'dart:web_audio';
-//import 'dart:web_gl';
-//import 'dart:web_sql';
-/// Helper class allows to run Dart code in Org Babel source block.
+import 'dart:mirrors';/// Helper class allows to run Dart code in Org Babel source block.
 /// This is a test version which is eventually embedded in elisp ob-dart.el
-/// as `ob-dart-no-main-snippet-wrapper-metho`.
+/// as `ob-dart-wrapper`.
 class Gen {
   /// Wrapped code from the org file:
   ///   if org file has NO MAIN, code is from between #+begin_src and #+end_src.
@@ -86,8 +71,8 @@ class Gen {
   ///         BUT AWAIT CALL MUST BE MARKED ASYNC ON CALLER.
   ///
   ///       In other words, a call to async method:
-  ///           1. "await-marked     async method call MUST mark caller async"
-  ///           2. "await-non-marked async method call has CHOICE to mark caller async"
+  ///           1. 'await-marked     async method call MUST mark caller async'
+  ///           2. 'await-non-marked async method call has CHOICE to mark caller async'
   ///
   ///   What does this note mean:
   ///         Calling ASYNC `method` inside `methodCaller`, ONLY requires
@@ -100,8 +85,8 @@ class Gen {
   ///        - Otherwise, caller calls `method():`
   ///             the flow continues TO CALLERS, WHO NEVER AGAIN
   ///             ARE REQUIRED to AWAIT OR DECLARE ASYNC.
-  ///             THE DISADVANTAGE OF THE "Otherwise" IS THE
-  ///             FLOW CONTINUES, AND THE "AWAIT" MAY NOT FINISH UNTIL
+  ///             THE DISADVANTAGE OF THE 'Otherwise' IS THE
+  ///             FLOW CONTINUES, AND THE 'AWAIT' MAY NOT FINISH UNTIL
   ///             AFTER THE PROGRAM FINISHES. THAT MEANS, WHATEVER
   ///             RESULT WAS EXPECTED FROM THE LOWEST LEVEL ASYNC FUNCTION,
   ///             WILL BE NULL.
@@ -109,7 +94,7 @@ class Gen {
   ///  Continue flow after the call to async `runBlock`,
   ///  without wait to caller(s).
   ///
-  //   The [runBlock] runs async,
+  ///   The [runBlock] runs async,
   ///  but BEFORE WE PRINT IN CALLER, this thread WAITs, making async to resolve
   ///  the future [runBlock] returnedValue BACK INTO this FLOW (THREAD) before print.
  runBlockResultsValue(List args) async  {
@@ -120,9 +105,9 @@ class Gen {
     /// The [ZoneSpecification] is defined such that any [print] statement
     /// in the [body] is ignored.
     runZoned(() {
-      // If we used "await runBlock()", we would also be forced to "runZoned(() async {".
+      // If we used 'await runBlock()', we would also be forced to 'runZoned(() async {'.
       // Even if this code did not propagate the above async up to runBlockResultsValue(),
-      // or further, the "await runBlock()" causes to wait here,
+      // or further, the 'await runBlock()' causes to wait here,
       // but the code flow continue,
       // This means, that the async operation immediately reaches the caller
       //    print('${ Gen().runBlockResultsValue()}');

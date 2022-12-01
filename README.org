@@ -1,44 +1,152 @@
 This document is a (relatively) short description of using Dart as one of the languages in Emacs org-mode Babel.
 
+* Version 2.0.0
+
+* New in Version 2.0.0
+
+Added support to put in source blocks correct Dart code including main() method.
+
+If the Org Babel Dart code block has the top level ~main()~ method, it is assumed that user does not want ob-dart to mangle in any way, and run the code as-is. But such source blocks with ~main()~ currently only support ~:results output~ (anything after output still supported, e.g. ~:results output raw~
+
+** Examples of new 2.0.0 feature
+
+The added feature in version 2.0.0 is support for pure Dart code that contains classes, top level functions, and  ~main()~ in source blocks.
+
+Only ~:results output~ work.  ~:results value~ behaves as output.
+
+#+name: body6-main.dart
+#+begin_src dart :results output
+import 'dart:math';
+
+/// Complete Dart code snippet can be wrapped.
+main(List args) {
+  var listMax = [10,20,30].reduce(max);
+  print ('WE HAVE MAIN');
+  print ('In output mode, all printed lines show in result');
+  print ('List max printed = ' + listMax.toString());
+  return ('Results: value!! List from MAIN');
+  }
+#+end_src
+
+#+RESULTS: body6-main.dart
+: WE HAVE MAIN
+: In output mode, all printed lines show in result
+: List max printed = 30
+
+The next example has some Async code, so it runs 4 seconds.
+
+#+name: body6-main-also-classes-functions.dart
+#+begin_src dart
+import 'dart:async';
+import 'dart:math';
+import 'dart:io' as io; // sleep is here
+
+/// Complete Dart code snippet can be wrapped.
+
+class Classroom {
+  int size = 3;
+  List<String> pupils = ['Andrea', 'Monica', 'Andrew'];
+}
+
+Future<Classroom> classroomWithDelay() async {
+  // In Async Code
+  // If NO await below, flow would continue immediately after being called,
+  //   Classroom inside returned Future would be null,
+  //   which is OK in this case, but if the Classroom was obtained
+  //   remotely, Classroom inside Future would be null,
+  //   and classroom.size would fail on null when called almost immediately.
+
+  // The "then" WILL NOT await unless asked.
+  // Prints after this call happen before Classroom ready, but otherwise
+  // no null issues.
+  return await Future.delayed(Duration(seconds: 4)).then((value) => Classroom());
+  // In Sync Code
+  // io.sleep(Duration(seconds:1));
+}
+
+main(List args) async {
+  // create the future here. It can be created anywhere
+  // With await inside classroomWithDelay(), the code awaits inside
+  // BUT FLOW CONTINUES BELOW, BECAUSE classroomWithDelay() IS ASYNC,
+  // SO THE WORLD FORKS BELOW
+  print('1. body7: START');
+  print('2. before futureClassroom');
+  Future<Classroom> futureClassroom = classroomWithDelay();
+  print('3. after futureClassroom');
+  // var listMax = [10, 20, 30].reduce(max);
+  // print('List max printed = ' + listMax.toString());
+
+  print('4. before futureClassroom.then. Will wait 4s if await called below.');
+
+  // "then((classroom) => processClassroom)" is necessary.
+  // No other way to pull Classroom from Future
+  //
+  // WITHOUT await below, print('7. body7: END'); would be printed before classroom print (!!)
+  //   other than that, classroom info is printed OK, no null issues.
+  // The reason for the switch (without await below) is that futureClassroom
+  //   is async (rather it's a future), and FLOW FORKS on discovering any ASYNC
+  //   code or Future variable.
+  await futureClassroom.then((Classroom classroom) {
+    print('5. inside futureClassroom.then: Class size = ${classroom.size}, pupils=${classroom.pupils}');
+    print('6. end of futureClassroom.then');
+    return ('NO SHOW - returns to OS: Results: value!! List from MAIN');
+  });
+  print('7. body7: END');
+}
+#+end_src
+
+#+RESULTS: body6-main-also-classes-functions.dart
+: 1. body7: START
+: 2. before futureClassroom
+: 3. after futureClassroom
+: 4. before futureClassroom.then. Will wait 4s if await called below.
+: 5. inside futureClassroom.then: Class size = 3, pupils=[Andrea, Monica, Andrew]
+: 6. end of futureClassroom.then
+: 7. body7: END
+
+
 * TODOS todos
 
-Currently:
-
- - If body has main
-   - ob-dart uses block unchanged, with imports and everything.
-   - Only :results output supported
- - Else
-   - the full contents of block is wrapped in the Gen code wrapper in ob-dart-wrapper
-
- - If body has main
-   - todo-v3 : Allow blocks with "main" also be wrapped in Zone so "results: value" is supported
-   - e.g. "Future<type> main(List args) async  \{"
-   - e.g. "type main(List args) async  \{"
-   - parse out args name and put to args-name
-   - parse out async and put to async-str
-   - if eq async-str async, set await-str await
-   - Future<type> there
-      - put to return-type
-   - else if type there
-      - put to return-type
-   - else return-type=void
-   - replace the body main line with line $return-type originalMain(List $args-name) $async-str
-   - setq call-original-main "return originalMain($args-name);"
-   - appending and formatting full-body:
-     - concat
-        - "import 'dart:async';"
-        - body
-        - format-spec ob-dart-wrapper `((?a . async-str) (?w . await-str) (?s . ,call-original-main))
- - Else body does not match main
-   - todo-v2 allow imports, classes, top level functions from top in that order, delimited by
-     // ob-dart-block-imports-end, // ob-dart-block-classes-end, // ob-dart-block-functions-end
-     - pull sections out of body, create 'body-top-extracted' from 'ob-dart-wrapper-imports',
-       and sections above in that order. These will not be formatted, and placed
-       where 'ob-dart-wrapper-imports' are now
-     - create 'body-main-extracted' formatted and wrapped as current body
-     - so the full-body will be created as
-                 body-top-extracted
-                 wrapped body-main-extracted))
+1. See todo in ob-dart.el
+2. Currently we have:
+   - If body has main
+     - ob-dart uses block unchanged, with imports and everything.
+     - Only :results output supported
+   - Else
+     - the full contents of block is wrapped in the Gen code wrapper in ob-dart-wrapper
+3. Change it to
+   - If body has main
+     - todo-v3 : Allow blocks with "main" also be wrapped in Zone so "results: value" is supported
+     - Implementation  
+       - e.g. "Future<type> main(List args) async  \{"
+       - e.g. "type main(List args) async  \{"
+       - parse out args name and put to args-name
+       - parse out async and put to async-str
+       - if eq async-str async, set await-str await
+       - Future<type> there
+         - put to return-type
+       - else if type there
+         - put to return-type
+       - else return-type=void
+       - replace the body main line with line $return-type originalMain(List $args-name) $async-str
+       - setq call-original-main "return originalMain($args-name);"
+       - appending and formatting full-body:
+         - concat
+           - "import 'dart:async';"
+           - body
+           - format-spec ob-dart-wrapper `((?a . async-str) (?w . await-str) (?s . ,call-original-main))
+   - Else body does not match main
+     - todo-v2 also allow imports, classes, top level functions from top in that order, followed by non-main code.
+     - Implementation:
+       - Require that source block author adds some markers at the end of certain block:
+         - after imports // ob-dart-block-imports-end, after classes // ob-dart-block-classes-end, after top funcions // ob-dart-block-functions-end
+       - pull sections out of body, create 'body-top-extracted' from 'ob-dart-wrapper-imports',
+         and sections above in that order. These will not be formatted, and placed
+         where 'ob-dart-wrapper-imports' are now
+       - create 'body-main-extracted' formatted and wrapped as current body
+       - so the full-body will be created as
+                   body-top-extracted
+                   wrapped body-main-extracted))
 
 * About this Package: Org Babel Dart (ob-dart).
 
@@ -59,7 +167,6 @@ return [1,2, 11,15].reduce(max);
 
 #+RESULTS:
 : 15
-
 
 There are more examples in the Examples section.
 
@@ -234,9 +341,10 @@ print (str == "hello there");
 print (str == "not hello there");
 #+END_SRC
 
-#+RESULTS: body1-prints
+#+RESULTS: body1-prints.dsnip
 : true
 : false
+
 
 The text placed in ~#+RESULTS:~ block is determined by the arguments of the source code block. In the example above, we wanted to show the standard output in the ~#+RESULTS:~ block, so we used:
 
@@ -253,7 +361,7 @@ We can use any valid Dart code, including functions, except class definitions.
 
 Here we use ~if..else~ for flow control.
 
-#+name: body2-conditional
+#+name: body2-conditional.dsnip
 #+BEGIN_SRC dart :exports both :results output
 var status = false;
 if (status) {
@@ -263,10 +371,8 @@ if (status) {
 }
 #+END_SRC
 
-#+RESULTS: body2-conditional
+#+RESULTS: body2-conditional.dsnip
 : Status was false
-
-
 
 * Presenting :results value and :results output and :results output(or value) raw
 
@@ -274,7 +380,7 @@ Examples show the rather boring differences between various collection types (:r
 
 First, source block which asks for ~:results value~ should result in the string representation of the last statement in the source block which *must be marked with the ~return~ keyword*.
 
-#+name: body3-prints
+#+name: body3-prints.dsnip
 #+BEGIN_SRC dart :exports both :results value
   var listMax = [1,2,3].reduce(max);
   print  ("In output mode, all printed lines show in result");
@@ -282,7 +388,7 @@ First, source block which asks for ~:results value~ should result in the string 
   return  "List max returned = " + listMax.toString(); // Note: bug in Org export (C-c C-e h o) prevents a syntactically correct:   return  "List max returned = ${listMax}"; 
 #+END_SRC
 
-#+RESULTS: body3-prints
+#+RESULTS: body3-prints.dsnip
 : List max returned = 3
 
 The same source block which asks for ~:results value table~ should result in the string representation of the last statement, converted to a Org-table on pipe characters if the resulting object is a collection. As the result is not a collection, the whole string representation is surrounded with pipe characters as one table cell.
@@ -303,12 +409,16 @@ To output an actual table, return a list. Like this:
   return [1,2];
 #+END_SRC
 
+todo fix this regression
 #+RESULTS:
+| [1 (, 2)] |
+
+#+RESULTS: this-was-correct
 | 1 | 2 |
 
 Or if you want to return a table with headers, like this:
 
-#+name: body4-collection
+#+name: body4-collection.dsnip
 #+BEGIN_SRC dart :exports both :results value table 
   return [ 
     ["col_1", "col_2"], // no spaces in headers; default impl breaks on them
@@ -316,6 +426,11 @@ Or if you want to return a table with headers, like this:
     [3,       4]
   ];
 #+END_SRC
+todo fix this regression
+
+#+RESULTS: body4-collection.dsnip
+| [[col_1 (, col_2)] (, [1 (, 2)]) (, [3 (, 4)])] |
+
 
 #+RESULTS: body4-collection
 | col_1 | col_2 |
@@ -411,6 +526,7 @@ Below, a discussion for each numbered item in the Limitations section.
 
          #+RESULTS:
          : 5.0625
+
 
        - Invalid Example (does not work because class cannot be nested in a function, and we are wrapping all code in main())
 
