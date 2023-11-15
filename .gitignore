@@ -1,1 +1,10 @@
-.emacs.d/
+# Ignore these dirs hierarchically
+/**/backups/
+/**/rejected/
+/**/.emacs.d/
+/**/.emacs.desktop
+/**/.emacs.desktop.lock
+/**/.project.el
+/**/.projectile
+/**/.gnupg
+/**/*cache*/
